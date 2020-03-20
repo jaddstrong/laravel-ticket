@@ -123,7 +123,7 @@
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script>
     $(".edit").click(function(){
-        
+        $('#submit').hide();
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
