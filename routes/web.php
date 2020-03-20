@@ -26,9 +26,11 @@ Route::get('/admin', 'AdminsController@index');
 // Route::resource('/user','UsersController');
 Route::get('/user', 'UsersController@index');
 Route::post('/user', 'UsersController@store');
+Route::get('/user/{id}', 'UsersController@show');
 Route::get('/user/{id}/edit', 'UsersController@edit');
 Route::post('/user/{id}', 'UsersController@update');
 Route::delete('/user/{id}', 'UsersController@destroy');
+
 
 Route::resource('/admin/pending','PendingController');
 
