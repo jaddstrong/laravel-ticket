@@ -23,6 +23,12 @@ Route::get('/home', 'HomeController@index');
 Route::get('/admin', 'AdminsController@index');
 // Route::get('/user', 'UsersController@index');
 
-Route::resource('/user','UsersController');
+// Route::resource('/user','UsersController');
+Route::get('/user', 'UsersController@index');
+Route::post('/user', 'UsersController@store');
+Route::get('/user/{id}/edit', 'UsersController@edit');
+Route::post('/user/{id}', 'UsersController@update');
+Route::delete('/user/{id}', 'UsersController@destroy');
+
 Route::resource('/admin/pending','PendingController');
 

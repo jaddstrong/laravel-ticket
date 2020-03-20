@@ -25,27 +25,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach($query as $key)
+                            @foreach($tickets as $key)
                                 <tr>
-                                    <td>{{$key}}</td>
-                                    <td>{{$key}}</td>
-                                    <td>{{$key}}</td>
-                                    <td><a role="button" class="btn btn-sm btn-primary">Edit</a></td>
-                                    <td><a role="button" class="btn btn-sm btn-primary">Delete</a></td>
+                                    <td>{{$key->ticket_title}}</td>
+                                    <td>{{$key->ticket_description}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{$key->ticket_importance}}</td>
+                                    <td>
+                                        <a href="/admin/pending/{{$key->id}}" class="btn btn-sm btn-primary">View</a>
+                                        <a href="#" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#myModal">Logs</a>
+                                        <a href="/admin/pending/id" class="btn btn-sm btn-success">Accept</a>
+                                    </td>
                                 </tr>
-                            @endforeach --}}
-                            <tr>
-                                <td>Title of the ticket</td>
-                                <td>Description of the ticket</td>
-                                <td>Last comment of the assigned admin</td>
-                                <td>Name of the last assigned admin</td>
-                                <td>Level of Importance</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal">View</a>
-                                    <a href="#" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#myModal">Logs</a>
-                                    <a href="/admin/pending/id" class="btn btn-sm btn-success">Accept</a>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

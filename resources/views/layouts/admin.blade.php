@@ -102,23 +102,22 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Create Ticket</h4>
+                        <h4 class="modal-title">Ticket Logs</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        {{ Form::open(array('url' => 'foo/bar')) }}
-                            <div class="form-group">
-                                <?php echo Form::label('label_title', 'Tittle:', ['for' => 'title']); ?>
-                                <?php echo Form::text('title', '', ['class' => 'form-control', 'placeholder' => 'Ticket Title']); ?>
-                            </div>
-                            <div class="form-group">
-                                <?php echo Form::label('label_description', 'Description:', ['for' => 'description']); ?>
-                                <?php echo Form::textarea('description', '', ['class' => 'form-control', 'placeholder' => 'Ticket Description', 'rows' => '5', 'style' => 'resize:none']); ?>
-                            </div>
-                        {{ Form::close() }}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <td>Date</td>
+                                    <td>assigned</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success">Submit</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>

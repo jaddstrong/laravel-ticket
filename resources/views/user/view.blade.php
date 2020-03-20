@@ -1,11 +1,14 @@
-@extends('layouts.admin')
+@extends('layouts.user')
 
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
-                <div class="card-header">Ticket Title</div>
+                <div class="card-header">
+                    <a class="btn btn-secondary" href="/user">Back</a>
+                </div>
+
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
@@ -18,12 +21,10 @@
                                 <img class="mr-3" alt="Bootstrap Media Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-8.jpg" />
                                 {{-- Ticket Information --}}
                                 <div class="media-body">
-                                    <h5 class="mt-0">
-                                        Title of the Ticket 
-                                    </h5> 
-                                    <p>THIS IS DESCRIPTION: Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-                                    <span>Importance</span><br>
-                                    <span>Date(Timestamp)</span>
+                                    <h5 class="mt-0">{{$ticket->ticket_title}}</h5> 
+                                    <p class="">{{$ticket->ticket_description}}</p>
+                                    <span>{{$ticket->ticket_importance}}</span><br>
+                                    <small>{{$ticket->created_at}}</small>
                                     
                                     {{-- Comment List --}}
                                     <div class="media mt-3">
@@ -59,7 +60,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
 
             </div>

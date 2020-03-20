@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     public function user(){
-        return $this->belongsto('App\user');
+        return $this->belongsto('App\User');
     }
 }

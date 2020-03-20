@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
-
+use App\Ticket;
 
 class UsersController extends Controller
 {
@@ -50,11 +50,12 @@ class UsersController extends Controller
         ]);
 
         $id = Auth::user()->id;
+        
         $ticket = new Ticket;
         $ticket->user_id = $id;
         $ticket->ticket_title = $request->input('title');
         $ticket->ticket_description = $request->input('description');
-        $ticket->ticket_importance = 'level1';
+        $ticket->ticket_importance = $request->input('importance');
         $ticket->ticket_active = false;
         $ticket->ticket_finish = false;
         $ticket->save();
@@ -70,7 +71,8 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        //
+        $ticket = Ticket::find($id);
+        return view('user.view')->with('ticket', $ticket);
     }
 
     /**
@@ -81,7 +83,9 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $ticket = Ticket::find($id);
+        return response()->json($ticket);
+        
     }
 
     /**
@@ -93,7 +97,19 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'description' => 'required'
+        ]);
+
+        $user_id = Auth::user()->id;
+        $ticket = Ticket::find($id);
+        $ticket->ticket_title = $request->input('title');
+        $ticket->ticket_description = $request->input('description');
+        $ticket->ticket_importance = $request->input('importance');
+        $ticket->save();
+
+        return redirect('/user');
     }
 
     /**
@@ -104,6 +120,9 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $ticket = Ticket::find($id);
+        $ticket->delete();
+
+        return redirect('/user');
     }
 }

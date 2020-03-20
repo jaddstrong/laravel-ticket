@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -33,7 +34,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav mr-auto">     
                         <li class="nav-item active">
                             <a class="nav-link" href="/admin">Tickets</a>
                         </li>
@@ -79,29 +80,37 @@
             @yield('content')
         </main>
 
+        {{-- MODAL FOR CREATE --}}
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog modal-lg">
-            
+                
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Create Ticket</h4>
+                        <h4 class="modal-title" id="modalHeading">Create Ticket</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        {{ Form::open(array('action' => 'UsersController@store', 'method' => 'POST')) }}
                             <div class="form-group">
-                                <?php echo Form::label('label_title', 'Tittle:', ['for' => 'title']); ?>
-                                <?php echo Form::text('title', '', ['class' => 'form-control', 'placeholder' => 'Ticket Title']); ?>
+                                <label for="title">Title: </label>
+                                <input type="text" id="title" name="title" class="form-control" placeholder="Ticket title">
                             </div>
                             <div class="form-group">
-                                <?php echo Form::label('label_description', 'Description:', ['for' => 'description']); ?>
-                                <?php echo Form::textarea('description', '', ['class' => 'form-control', 'placeholder' => 'Ticket Description', 'rows' => '5', 'style' => 'resize:none']); ?>
+                                <label for="description">Title: </label>
+                                <input type="text" id="description" name="description" class="form-control" placeholder="Ticket description">
+                            </div>
+                            <div class="form-group">
+                                <label for="importance">Importance level: </label>
+                                <select id="importance" name="importance" class="form-control">
+                                    <option value="level1">Level 1</option>
+                                    <option value="level2">Level 3</option>
+                                    <option value="level3">Level 3</option>
+                                  </select>
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <?php echo Form::submit('Submit', ['class' => 'btn btn-success']); ?>
-                        {{ Form::close() }}
+                        <button type="button" id="update" class="btn btn-warning">Update</button>
+                        <button type="button" id="submit" class="btn btn-success">Submit</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
@@ -111,4 +120,90 @@
 
     </div>
 </body>
+<script src="{{ asset('js/jquery.js') }}"></script>
+<script>
+    $(".edit").click(function(){
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var id = this.id;
+        $.ajax({type:"GET", url: "/user/"+id+"/edit", success: function(result){
+            // $('#modelHeading').val("Edit Ticket");
+            $('#submit').val("Update");
+            $('#title').val(result.ticket_title);
+            $('#description').val(result.ticket_description);
+            $('#importance').val(result.ticket_importance);
+            $('#myModal').modal("show");
+        }});
+
+        $("#update").click(function(){
+            var title = $('#title').val();
+            var description = $('#description').val();
+            var importance = $('#importance').val();
+            $.ajax({url:"/user/"+id, type:"post", data:{title:title,description:description,importance:importance}, success: function(result){
+                location.reload(true);
+            }});
+        });
+        
+    });
+
+    $("#create").click(function(){
+        $('#update').hide();
+    });
+
+    $("#submit").click(function(){
+        var title = $('#title').val();
+        var description = $('#description').val();
+        var importance = $('#importance').val();
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "/user",
+            data:
+            {
+                title:title,
+                description:description,
+                importance:importance
+            },
+            success: function(result){
+                location.reload(true);
+            }
+        });
+    });
+
+    $(".delete").click(function(){
+        var r = confirm("Confirm to delete ticket.");
+        if (r == true) {
+            var id = this.id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"DELETE",
+                url:"/user/"+id,
+                success: function(result){
+                    
+                }
+            });
+            location.reload(true);
+        } else {
+            window.close();
+        }
+    });
+
+    function myFunction() {
+    
+    }
+</script>
 </html>
+
+
