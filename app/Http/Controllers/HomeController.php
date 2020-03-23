@@ -24,11 +24,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user_type = Auth::user()->user_type;
-        if($user_type == "user"){
-            return redirect('/user');
-        }elseif($user_type == "admin"){
-            return redirect('/admin');
-        }        
+        return view('/home');      
     }
+    // public function admin(Request $req){
+    //     return view('middleware');
+    // }
+    // public function user(Request $req){
+    //     return view('middleware');
+    // }
 }

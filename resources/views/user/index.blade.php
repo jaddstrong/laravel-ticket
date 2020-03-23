@@ -58,6 +58,8 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    <div class="pagination justify-content-center">{{ $query->links() }}</div>
                 </div>
 
             </div>

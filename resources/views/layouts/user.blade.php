@@ -103,7 +103,7 @@
                                 <label for="importance">Importance level: </label>
                                 <select id="importance" name="importance" class="form-control">
                                     <option value="level1">Level 1</option>
-                                    <option value="level2">Level 3</option>
+                                    <option value="level2">Level 2</option>
                                     <option value="level3">Level 3</option>
                                   </select>
                             </div>

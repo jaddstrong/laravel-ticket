@@ -20,6 +20,7 @@ class CreateTicketsTable extends Migration
             $table->string('ticket_description');
             $table->set('ticket_importance', ['level1', 'level2', 'level3']);
             $table->string('ticket_assign')->nullable();
+            $table->bigInteger('ticket_admin_id')->nullable();
             $table->boolean('ticket_active');
             $table->boolean('ticket_finish');
             $table->timestamps();

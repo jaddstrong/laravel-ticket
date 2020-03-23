@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Ticket;
+use App\Comment;
 
 class PendingController extends Controller
 {
@@ -45,7 +47,8 @@ class PendingController extends Controller
      */
     public function show($id)
     {
-        return view('admin.view');
+        $query = Ticket::find($id);
+        return view('admin.view')->with('$query', $query->comments);
     }
 
     /**

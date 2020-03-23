@@ -18,12 +18,9 @@ class UsersController extends Controller
     {
         $user_id = Auth::user()->id;
         $user_type = Auth::user()->user_type;
-        if($user_type == 'user'){
-            $query = User::find($user_id);
-            return view('user.index')->with('query', $query->tickets);
-        }else{
-            return redirect('/home');
-        }
+        $query = Ticket::where('user_id', $user_id)->orderBy('created_at', 'desc')->paginate(10);
+        return view('user.index')->with('query', $query);
+
     }
 
     /**
@@ -56,6 +53,7 @@ class UsersController extends Controller
         $ticket->ticket_title = $request->input('title');
         $ticket->ticket_description = $request->input('description');
         $ticket->ticket_importance = $request->input('importance');
+        $ticket->ticket_admin_id = 0;
         $ticket->ticket_active = false;
         $ticket->ticket_finish = false;
         $ticket->save();

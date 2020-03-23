@@ -16,6 +16,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th>Date</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Comment</th>
@@ -27,20 +28,32 @@
                         <tbody>
                             @foreach($tickets as $key)
                                 <tr>
+                                    <td>{{$key->updated_at}}</td>
                                     <td>{{$key->ticket_title}}</td>
                                     <td>{{$key->ticket_description}}</td>
-                                    <td></td>
-                                    <td></td>
+                                    @if(count($key->comments))
+                                        @foreach($key->comments as $val)
+                                            @if($val->comment)
+                                                <td>{{$val->comment}}</td>
+                                            @endif
+                                            @break
+                                        @endforeach
+                                    @else
+                                        <td></td>
+                                    @endif
+                                    <td>{{$key->ticket_assign}}</td>
                                     <td>{{$key->ticket_importance}}</td>
                                     <td>
-                                        <a href="/admin/pending/{{$key->id}}" class="btn btn-sm btn-primary">View</a>
-                                        <a href="#" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#myModal">Logs</a>
-                                        <a href="/admin/pending/id" class="btn btn-sm btn-success">Accept</a>
+                                        <a href="/admin/{{$key->id}}/show" class="btn btn-sm btn-primary">View</a>
+                                        <a href="#" id="{{$key->id}}" class="btn btn-sm btn-secondary logs" data-toggle="modal" data-target="#myModal">Logs</a>
+                                        <a href="/admin/{{$key->id}}/add" id="{{$key->id}}" class="btn btn-sm btn-success accept">Accept</a>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    
+                    <div class="pagination justify-content-center">{{ $tickets->links() }}</div>
                 </div>
 
             </div>

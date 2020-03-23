@@ -23,25 +23,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach($query as $key)
+                            {{-- {{$pending}} --}}
+                            @foreach($pending as $key)
                                 <tr>
-                                    <td>{{$key}}</td>
-                                    <td>{{$key}}</td>
-                                    <td>{{$key}}</td>
-                                    <td><a role="button" class="btn btn-sm btn-primary">Edit</a></td>
-                                    <td><a role="button" class="btn btn-sm btn-primary">Delete</a></td>
+                                    <td>{{$key->ticket_title}}</td>
+                                    <td>{{$key->ticket_description}}</td>
+                                    @if(count($key->comments))
+                                        @foreach($key->comments as $val)
+                                            @if($val->comment)
+                                                <td>{{$val->comment}}</td>
+                                            @endif
+                                            @break
+                                        @endforeach
+                                    @else
+                                        <td></td>
+                                    @endif
+                                    
+                                    <td>{{$key->ticket_importance}}</td>
+                                    <td>
+                                        <a href="/admin/{{$key->id}}/show" class="btn btn-sm btn-primary">View</a> 
+                                        <a id="return" class="btn btn-sm btn-danger">Return</a>
+                                        <input type="hidden" id="id" name="id" value="{{$key->id}}">
+                                    </td>
                                 </tr>
-                            @endforeach --}}
-                            <tr>
-                                <td>Title of the ticket</td>
-                                <td>Description of the ticket</td>
-                                <td>Comment of the last assigned admin</td>
-                                <td>Importance level of the ticket</td>
-                                <td>
-                                    <a href="/admin/pending/id" class="btn btn-sm btn-primary">View</a> 
-                                    <a href="#" class="btn btn-sm btn-danger">Drop</a>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

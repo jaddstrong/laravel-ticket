@@ -18,6 +18,15 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+        textarea{
+            resize:none;
+        }
+        th, td{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -106,7 +115,7 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="logs_table">
                             <thead>
                                 <tr>
                                     <td>Date</td>
@@ -127,4 +136,84 @@
 
     </div>
 </body>
+<script src="{{ asset('js/jquery.js') }}"></script>
+<script>
+    $( document ).ready(function(){
+        $(".accept").click(function(){
+            var id = this.id;
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "/admin/"+id+"/add",
+                data:
+                {
+                    id:id
+                },
+                success: function(result){}
+            });
+        });
+
+        $("#send").click(function(){
+            var id = $("#id").val();
+            var comment = $("#comment").val();
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "/admin/comment",
+                data:
+                {
+                    id:id,
+                    comment:comment
+                },
+                success: function(result){
+                    location.reload(true);
+                }
+            });
+        });
+
+        $("#return").click(function(){
+            var id = $("#id").val();
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "/admin/"+id+"/return",
+                data:
+                {
+                    id:id
+                },
+                success: function(result){
+                    window.location.href = '/admin/pending';
+                }
+            });
+        });
+
+        // $(".logs").click(function(){
+        //     var id = this.id;
+        //     $.ajaxSetup({
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     });
+        //     $.ajax({
+        //         type:"GET",
+        //         url: "/admin/"+id+"/logs",
+        //         success: function(result){
+                   
+        //         }
+        //     });
+        // });
+    });
+</script>
 </html>

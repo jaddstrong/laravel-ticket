@@ -23,30 +23,22 @@
                                 <div class="media-body">
                                     <h5 class="mt-0">{{$ticket->ticket_title}}</h5> 
                                     <p class="">{{$ticket->ticket_description}}</p>
-                                    <span>{{$ticket->ticket_importance}}</span><br>
+                                    <small>{{$ticket->ticket_importance}}</small><br>
                                     <small>{{$ticket->created_at}}</small>
                                     
                                     {{-- Comment List --}}
+                                    @foreach($ticket->comments as $key)
                                     <div class="media mt-3">
                                          <a class="pr-3" href="#"><img alt="Bootstrap Media Another Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-2.jpg" /></a>
                                         <div class="media-body">
                                             <h5 class="mt-0">
-                                                Name of the Admin(latest comment)
+                                                {{$key->user_name}}
                                             </h5> 
-                                            <p>THIS IS THE COMMENT: Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-                                            <span>Date(Timestamp)</span>
+                                            <p>{{$key->comment}}</p>
+                                            <small>{{$key->created_at}}</small><hr>
                                         </div>
                                     </div>
-                                    <div class="media mt-3">
-                                        <a class="pr-3" href="#"><img alt="Bootstrap Media Another Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-2.jpg" /></a>
-                                        <div class="media-body">
-                                            <h5 class="mt-0">
-                                                Name of the Admin(latest comment)
-                                            </h5> 
-                                            <p>THIS IS THE COMMENT: Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-                                            <span>Date(Timestamp)</span>
-                                        </div>
-                                   </div>
+                                    @endforeach
 
                                    {{-- Create Comment --}}
                                    <div class="media mt-3">
