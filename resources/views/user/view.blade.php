@@ -6,7 +6,11 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    <a class="btn btn-secondary" href="/user">Back</a>
+                    @if($ticket->ticket_finish == 1)
+                        <a class="btn btn-secondary" href="/archive">Back</a>
+                    @else
+                        <a class="btn btn-secondary" href="/user">Back</a>
+                    @endif
                 </div>
 
                 <div class="card-body">
@@ -43,8 +47,14 @@
                                    {{-- Create Comment --}}
                                    <div class="media mt-3">
                                         <div class="media-body">
-                                            <textarea class="form-control" rows="3"></textarea><br>
-                                            <button>Send</button>
+                                            <input type="hidden" id="id" name="id" value="{{$ticket->id}}">
+                                            @if($ticket->ticket_finish == 1 && $ticket->user_id == Auth::user()->id)
+                                                <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
+                                            @elseif($ticket->user_id == Auth::user()->id)
+                                                <textarea class="form-control" rows="3" id="comment"></textarea><br>
+                                                <button class="btn btn-primary send" id="send">Send</button>
+                                                <button class="btn btn-primary solve" id="solve">Solve</button>
+                                            @endif
                                         </div>
                                     </div>
 

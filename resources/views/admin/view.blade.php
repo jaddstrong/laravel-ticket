@@ -6,7 +6,9 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    @if($query->ticket_admin_id == Auth::user()->id)
+                    @if($query->ticket_finish == 1)
+                        <a class="btn btn-secondary" href="/admin/archive">Back</a>
+                    @elseif($query->ticket_admin_id == Auth::user()->id)
                         <a class="btn btn-secondary" href="/admin/pending">Back</a>
                     @else
                         <a class="btn btn-secondary" href="/admin">Back</a>
@@ -52,15 +54,19 @@
                                    {{-- Create Comment --}}
                                    <div class="media mt-3">
                                         <div class="media-body">
-                                            @if($query->ticket_admin_id == Auth::user()->id)
+                                            
+                                            <input type="hidden" id="id" name="id" value="{{$query->id}}">
+                                            @if($query->ticket_finish == 1)
+                                                <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
+                                            @elseif($query->ticket_admin_id == Auth::user()->id)
                                                 <textarea class="form-control" rows="3" id="comment"></textarea><br>
-                                                <input type="hidden" id="id" name="id" value="{{$query->id}}">
                                                 <button class="btn btn-primary send" id="send">Send</button>
                                                 <button class="btn btn-primary return" id="return">Return</button>
                                                 <button class="btn btn-primary solve" id="solve">Solve</button>
                                             @else
                                             <a href="/admin/{{$query->id}}/add" id="{{$query->id}}" class="btn btn-sm btn-success accept">Accept</a>
                                             @endif
+
                                         </div>
                                     </div>
 

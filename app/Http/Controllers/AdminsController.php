@@ -10,6 +10,7 @@ use App\Comment;
 
 class AdminsController extends Controller
 {
+    //TICKET POLL
     public function index()
     {
         $admin_id = Auth::user()->id;
@@ -21,12 +22,14 @@ class AdminsController extends Controller
 
     }
 
+    //DISPLAY THE TICKET INFORMATION AND COMMENTS
     public function show($id)
     {
         $query = Ticket::find($id);
         return view('admin.view')->with('query', $query);
     }
 
+    //PICK-UP TICKET FROM THE POLL
     public function add($id)
     {
         $admin_id = Auth::user()->id;
@@ -50,17 +53,19 @@ class AdminsController extends Controller
         return redirect('/admin/'.$id.'/show');
     }
 
+    //LIST OF ACCEPTED TICKET
     public function pending()
     {
         $admin_id = Auth::user()->id;
         $tickets = Ticket::with(array('comments' => function($q)
         {
             $q->orderBy('updated_at', 'desc');
-        }))->where('ticket_admin_id', $admin_id)->orderBy('updated_at', 'desc')->get();
+        }))->where('ticket_admin_id', $admin_id)->where('ticket_finish', 0)->orderBy('updated_at', 'desc')->get();
 
         return view('admin.pending')->with('pending', $tickets);
     }
 
+    //COMMENT TO THE TICKET
     public function comment(Request $request)
     {
         $comment = new Comment;
@@ -73,6 +78,7 @@ class AdminsController extends Controller
         return redirect('/admin/'.$request->input('id').'/show');
     }
 
+    //RETURN THE TICKET TO POLL
     public function return(Request $request)
     {
         $ticket = Ticket::find($request->input('id'));
@@ -82,10 +88,36 @@ class AdminsController extends Controller
 
     }
 
-    // UNFINISH
+    //CLOSE THE TICKET
+    public function solve($id)
+    {
+        $ticket = Ticket::find($id);
+        $ticket->ticket_finish = 1;
+        $ticket->save();
+
+    }
+
+    //RE-OPEN THE TICKET
+    public function open($id)
+    {
+        $ticket = Ticket::find($id);
+        $ticket->ticket_finish = 0;
+        $ticket->save();
+    }
+
+    // TICKET LOGS
     public function logs($id)
     {
-        $logs = Logs::where('ticket_id', $id)->get();
+        $logs = Logs::where('ticket_id', $id)->orderBy('created_at', 'desc')->get();
+        $array = array($logs);
         return response()->json($logs);
+    }
+
+    // TICKET ARCHIVE || LIST OF SOLVED TICKETS
+    public function archive()
+    {
+        $query = Ticket::where('ticket_finish', 1)->orderBy('updated_at', 'desc')->paginate(10);
+        return view('admin.archive')->with('query', $query);
+
     }
 }

@@ -49,7 +49,7 @@
                         @else
                             <li class="nav-item">
                         @endif
-                            <a class="nav-link" href="/admin">Tickets <span class="badge badge-light">42</span></a>
+                            <a class="nav-link" href="/admin">Tickets</a>
                         </li>
 
                         @if(url()->current() == "http://127.0.0.1:8000/admin/pending")
@@ -57,11 +57,15 @@
                         @else
                             <li class="nav-item">
                         @endif
-                            <a class="nav-link" href="/admin/pending">Pending Ticket <span class="badge badge-light">42</span></a>
+                            <a class="nav-link" href="/admin/pending">Pending Ticket</a>
                         </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Finished Ticket</a>
+
+                        @if(url()->current() == "http://127.0.0.1:8000/admin/archive")
+                            <li class="nav-item active">
+                        @else
+                            <li class="nav-item">
+                        @endif
+                            <a class="nav-link" href="/admin/archive">Archive</a>
                         </li>
                     </ul>
 
@@ -106,20 +110,20 @@
         </main>
 
         <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-sm">
             
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Ticket Logs</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close cancel" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <table class="table table-hover" id="logs_table">
                             <thead>
                                 <tr>
                                     <td>Date</td>
-                                    <td>assigned</td>
+                                    <td>Assigned</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,7 +131,7 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
               
@@ -139,6 +143,8 @@
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script>
     $( document ).ready(function(){
+
+        // ACCEPT TICKET FROM THE POLL
         $(".accept").click(function(){
             var id = this.id;
             $.ajaxSetup({
@@ -157,6 +163,7 @@
             });
         });
 
+        // SEND COMMENT TO A TICKET
         $("#send").click(function(){
             var id = $("#id").val();
             var comment = $("#comment").val();
@@ -178,7 +185,8 @@
                 }
             });
         });
-
+        
+        // RETURN TICKET TO THE POLL
         $("#return").click(function(){
             var id = $("#id").val();
             $.ajaxSetup({
@@ -199,21 +207,83 @@
             });
         });
 
-        // $(".logs").click(function(){
-        //     var id = this.id;
-        //     $.ajaxSetup({
-        //     headers: {
-        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         }
-        //     });
-        //     $.ajax({
-        //         type:"GET",
-        //         url: "/admin/"+id+"/logs",
-        //         success: function(result){
-                   
-        //         }
-        //     });
-        // });
+        //CLOSE/SOLVE THE TICKET
+        $("#solve").click(function(){
+            var id = $('#id').val();
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "/admin/"+id+"/solve",
+                data:
+                {
+                    id:id
+                },
+                success: function(result){
+                    window.location.href = '/admin/pending';
+                }
+            });
+        });
+
+        //RE-OPEN TICKET
+        $('#open_ticket').click(function(){
+            var id = $('#id').val();
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "/admin/"+id+"/open",
+                data:
+                {
+                    id:id
+                },
+                success: function(result){
+                    window.location.href = '/admin/archive';
+                }
+            });
+        });
+
+        //DISPLAY THE LOGS OF TICKET
+        $(".logs").click(function(){
+            var id = this.id;
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"GET",
+                url: "/admin/"+id+"/logs",
+                success: function(result){
+                    var i;
+                    for(i = 0; i < result.length; i++){
+                        var format_date = new Date(result[i].updated_at);
+                        var day = format_date.getDate();
+                        var m = format_date.getMonth();
+                        m += 1;
+                        var y = format_date.getFullYear();
+                        if (day < 10) {
+                            day = "0" + day;
+                        }
+                        if (m < 10) {
+                            m = "0" + m;
+                        }
+                        $("#logs_table").append("<tr><td>"+ day + "-" + m + "-" + y +"</td><td>"+result[i].admin_name+"</td></tr>");
+                    }
+                }
+            });
+        });
+
+        //EMPTY THE MODAL OF LOGS
+        $(".cancel").click(function(){
+            $("#logs_table > tbody").empty();
+        });
     });
 </script>
 </html>

@@ -7,6 +7,7 @@
             <div class="card">
                 <div class="card-header">
                     <button class="btn btn-success" data-toggle="modal" data-target="#myModal" id="create">Create Ticket</button>
+                    {{-- <input id="search" type="text" placeholder="Search.."> --}}
                 </div>
 
                 <div class="card-body">
@@ -26,35 +27,33 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>                            
+                        <tbody id="table_body">                            
                             @foreach($query as $key)
-                                <tr>
-                                    <td>{{$key->created_at}}</td>
-                                    <td>
-                                        @if($key->ticket_finish == 0)
-                                            @if($key->ticket_active == 0)
-                                                <?php echo "Not active"; ?>
+                                @if($key->ticket_finish == 0)
+                                    <tr>
+                                        <td>{{$key->created_at}}</td>
+                                        <td>
+                                            @if($key->ticket_finish == 0)
+                                                @if($key->ticket_active == 0)
+                                                    <?php echo "Open"; ?>
+                                                @endif
+                                                @if($key->ticket_active == 1)
+                                                    <?php echo "Active"; ?>
+                                                @endif
+                                            @elseif($key->ticket_finish == 1)
+                                            <?php echo "Solve"; ?>
                                             @endif
-                                            @if($key->ticket_active == 1)
-                                                <?php echo "Active"; ?>
-                                            @endif
-                                        @elseif($key->ticket_finish == 1)
-                                        <?php echo "Solve"; ?>
-                                        @endif
-                                    </td>
-                                    <td>{{$key->ticket_title}}</td>
-                                    <td>{{$key->ticket_importance}}</td>
-                                    <td>{{$key->ticket_assign}}</td>
-                                    <td>
-                                        {{-- {{ Form::open(array('action' => ['UsersController@destroy', $key->id], 'method' => 'POST')) }} --}}
+                                        </td>
+                                        <td>{{$key->ticket_title}}</td>
+                                        <td>{{$key->ticket_importance}}</td>
+                                        <td>{{$key->ticket_assign}}</td>
+                                        <td>
                                             <a href="/user/{{$key->id}}" class="btn btn-sm btn-primary">View</a>
-                                            <a id="{{$key->id}}" class="btn btn-sm btn-warning edit">Edit</a>
-                                            <a id="{{$key->id}}" class="btn btn-sm btn-danger delete">Drop</a>
-                                            {{-- {{ Form::hidden('_method', 'DELETE') }}
-                                            {{ Form::submit('Drop', ['class' => 'btn btn-sm btn-danger drop']) }}
-                                        {{ Form::close() }} --}}
-                                    </td>
-                                </tr>
+                                            <a id="{{$key->id}}" href="#" class="btn btn-sm btn-primary edit">Edit</a>
+                                            <a id="{{$key->id}}" href="#" class="btn btn-sm btn-danger delete">Drop</a>
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>

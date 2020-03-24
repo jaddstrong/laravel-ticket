@@ -19,6 +19,14 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        textarea{
+            resize:none;
+        }
+        th, td{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -34,9 +42,23 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">     
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/admin">Tickets</a>
+                    <ul class="navbar-nav mr-auto">   
+
+                        @if(url()->current() == "http://127.0.0.1:8000/user")
+                            <li class="nav-item active">
+                        @else
+                            <li class="nav-item">
+                        @endif
+                            <a class="nav-link" href="/user">Tickets</a>
+                        </li>
+
+
+                        @if(url()->current() == "http://127.0.0.1:8000/archive")
+                            <li class="nav-item active">
+                        @else
+                            <li class="nav-item">
+                        @endif
+                            <a class="nav-link" href="/archive">Ticket Archive</a>
                         </li>
                     </ul>
 
@@ -92,12 +114,12 @@
                     </div>
                     <div class="modal-body">
                             <div class="form-group">
-                                <label for="title">Title: </label>
-                                <input type="text" id="title" name="title" class="form-control" placeholder="Ticket title">
+                                <label for="title">Ticket title: </label>
+                                <input type="text" id="title" name="title" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="description">Title: </label>
-                                <input type="text" id="description" name="description" class="form-control" placeholder="Ticket description">
+                                <label for="description">Ticket description: </label>
+                                <textarea type="text" id="description" name="description" class="form-control" rows="5"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="importance">Importance level: </label>
@@ -109,7 +131,7 @@
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="update" class="btn btn-warning">Update</button>
+                        <button type="button" id="update" class="btn btn-success">Update</button>
                         <button type="button" id="submit" class="btn btn-success">Submit</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
@@ -122,6 +144,7 @@
 </body>
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script>
+    // EDIT TICKET
     $(".edit").click(function(){
         $('#submit').hide();
         $.ajaxSetup({
@@ -131,7 +154,6 @@
         });
         var id = this.id;
         $.ajax({type:"GET", url: "/user/"+id+"/edit", success: function(result){
-            // $('#modelHeading').val("Edit Ticket");
             $('#submit').val("Update");
             $('#title').val(result.ticket_title);
             $('#description').val(result.ticket_description);
@@ -143,17 +165,28 @@
             var title = $('#title').val();
             var description = $('#description').val();
             var importance = $('#importance').val();
-            $.ajax({url:"/user/"+id, type:"post", data:{title:title,description:description,importance:importance}, success: function(result){
-                location.reload(true);
+            $.ajax({
+                url:"/user/"+id+"/update",
+                type:"post", 
+                data:
+                {
+                    title:title,
+                    description:description,
+                    importance:importance
+                }, 
+                success: function(result){
+                    location.reload(true);
             }});
         });
         
     });
 
+    // TO HIDE UPDATE BUTTON IN MODAL
     $("#create").click(function(){
         $('#update').hide();
     });
 
+    // CREATE TICKET
     $("#submit").click(function(){
         var title = $('#title').val();
         var description = $('#description').val();
@@ -177,7 +210,8 @@
             }
         });
     });
-
+    
+    // DELETE TICKET
     $(".delete").click(function(){
         var r = confirm("Confirm to delete ticket.");
         if (r == true) {
@@ -189,7 +223,7 @@
             });
             $.ajax({
                 type:"DELETE",
-                url:"/user/"+id,
+                url:"/user/"+id+"/delete",
                 success: function(result){
                     
                 }
@@ -200,9 +234,52 @@
         }
     });
 
-    function myFunction() {
+    // SEND COMMENT IN TICKET
+    $("#send").click(function(){
+        var id = $("#id").val();
+        var comment = $("#comment").val();
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "/user/"+id+"/comment",
+            data:
+            {
+                id:id,
+                comment:comment
+            },
+            success: function(){
+                location.reload(true);
+            }
+        });
+    });
+
+    //CLOSE/SOLVE THE TICKET
+    $("#solve").click(function(){
+        var id = $('#id').val();
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "/user/"+id+"/solve",
+            data:
+            {
+                id:id
+            },
+            success: function(result){
+                window.location.href = '/archive';
+            }
+        });
+    });
+
+    //SEARCH IN THE TABLE
     
-    }
 </script>
 </html>
 
