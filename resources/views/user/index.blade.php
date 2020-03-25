@@ -6,8 +6,14 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-success" data-toggle="modal" data-target="#myModal" id="create">Create Ticket</button>
-                    {{-- <input id="search" type="text" placeholder="Search.."> --}}
+                    <div class="row">
+                        <div class="col align-self-start">
+                            <button class="btn btn-success" data-toggle="modal" data-target="#myModal" id="create">Create Ticket</button>
+                        </div>
+                        <div class="col align-self-end">
+                            <input class="form-control" type="text" id="myInput" placeholder="Search...">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -16,7 +22,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <table class="table table-hover" id="tab">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -27,11 +33,17 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="table_body">                            
+                        <tbody id="myTable">                            
                             @foreach($query as $key)
-                                @if($key->ticket_finish == 0)
+                                @if($key->ticket_finish == 0)  
                                     <tr>
-                                        <td>{{$key->created_at}}</td>
+                                        <td>
+                                            @if(date('Y-m-d', strtotime($key->created_at)) < date('Y-m-d', strtotime(now())))
+                                                {{date('j F, Y', strtotime($key->created_at))}}
+                                            @else
+                                                {{ $key->created_at->diffForHumans() }}
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($key->ticket_finish == 0)
                                                 @if($key->ticket_active == 0)

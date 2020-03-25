@@ -6,13 +6,7 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    @if($query->ticket_finish == 1)
-                        <a class="btn btn-secondary" href="/admin/archive">Back</a>
-                    @elseif($query->ticket_admin_id == Auth::user()->id)
-                        <a class="btn btn-secondary" href="/admin/pending">Back</a>
-                    @else
-                        <a class="btn btn-secondary" href="/admin">Back</a>
-                    @endif
+                    <a class="btn btn-secondary" href="{!! URL::previous() !!}">Back</a>
                 </div>
                 <div class="card-body">
                     @if (session('status'))

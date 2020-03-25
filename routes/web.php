@@ -47,6 +47,7 @@ Route::group(['middleware' => 'App\Http\Middleware\UserMiddleware'], function(){
     Route::post('/user/{id}/comment', 'UsersController@comment');
     Route::get('/archive', 'UsersController@archive');
     Route::post('/user/{id}/solve', 'UsersController@solve');
+    Route::get('/userArchive', 'UsersController@userArchive');
 
 });
 

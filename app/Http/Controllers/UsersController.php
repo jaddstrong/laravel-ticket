@@ -19,7 +19,7 @@ class UsersController extends Controller
     {
         $user_id = Auth::user()->id;
         $user_type = Auth::user()->user_type;
-        $query = Ticket::where('user_id', $user_id)->orderBy('created_at', 'desc')->paginate(10);
+        $query = Ticket::where('user_id', $user_id)->where('ticket_drop', false)->orderBy('created_at', 'desc')->paginate(10);
         return view('user.index')->with('query', $query);
 
     }
@@ -57,6 +57,7 @@ class UsersController extends Controller
         $ticket->ticket_admin_id = 0;
         $ticket->ticket_active = false;
         $ticket->ticket_finish = false;
+        $ticket->ticket_drop = false;
         $ticket->save();
 
         return redirect('/user');
@@ -120,7 +121,8 @@ class UsersController extends Controller
     public function destroy($id)
     {
         $ticket = Ticket::find($id);
-        $ticket->delete();
+        $ticket->ticket_drop = true;
+        $ticket->save();
 
         return redirect('/user');
     }
@@ -141,9 +143,19 @@ class UsersController extends Controller
     // TICKET ARCHIVE || LIST OF SOLVED TICKETS
     public function archive()
     {
-        $query = Ticket::where('ticket_finish', 1)->orderBy('created_at', 'desc')->paginate(10);
+        $query = Ticket::where('ticket_finish', true)->where('ticket_drop', false)->orderBy('created_at', 'desc')->paginate(10);
         return view('user.archive')->with('query', $query);
+    }
 
+    // USER`S TICKET ARCHIVE || LIST OF SOLVED TICKETS OF THE USER
+    public function userArchive()
+    {
+        $query = Ticket::where('user_id', Auth::user()->id)
+            ->where('ticket_finish', true)
+            ->where('ticket_drop', false)
+            ->orderBy('updated_at', 'desc')->paginate(10);
+
+        return view('user.myArchive')->with('query', $query);
     }
 
     //CLOSE THE TICKET
@@ -154,4 +166,13 @@ class UsersController extends Controller
         $ticket->save();
 
     }
+
+    //SEARCH
+    // public function search(Request $request)
+    // {
+    //     $data = $request->data;
+    //     $search = Ticket::where('ticket_title', 'like', '%'.$data.'%')->get();
+
+    //     return response()->json($search);
+    // }
 }

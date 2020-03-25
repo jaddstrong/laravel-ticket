@@ -23,6 +23,7 @@ class CreateTicketsTable extends Migration
             $table->bigInteger('ticket_admin_id')->nullable();
             $table->boolean('ticket_active');
             $table->boolean('ticket_finish');
+            $table->boolean('ticket_drop');
             $table->timestamps();
         });
     }

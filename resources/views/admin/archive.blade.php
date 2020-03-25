@@ -6,7 +6,14 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    Archive List
+                    <div class="row">
+                        <div class="col align-self-start">
+                            <h3>Archive List</h3>
+                        </div>
+                        <div class="col align-self-end">
+                            <input class="form-control" type="text" id="myInput" placeholder="Search...">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -26,10 +33,16 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>                            
+                        <tbody id="myTable">                            
                             @foreach($query as $key)
                                 <tr>
-                                    <td>{{$key->updated_at}}</td>
+                                    <td>
+                                        @if(date('Y-m-d', strtotime($key->updated_at)) < date('Y-m-d', strtotime(now())))
+                                            {{date('j F, Y', strtotime($key->updated_at))}}
+                                        @else
+                                            {{ $key->updated_at->diffForHumans() }}
+                                        @endif
+                                    </td>
                                     <td>{{$key->ticket_description}}</td>
                                     <td>{{$key->ticket_title}}</td>
                                     <td>{{$key->ticket_importance}}</td>

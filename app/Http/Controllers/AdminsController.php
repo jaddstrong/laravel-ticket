@@ -14,10 +14,12 @@ class AdminsController extends Controller
     public function index()
     {
         $admin_id = Auth::user()->id;
-        $query = Ticket::with(array('comments' => function($q)
-        {
-            $q->orderBy('updated_at', 'desc');
-        }))->where('ticket_admin_id', '!=', $admin_id)->where('ticket_active', '0')->where('ticket_finish', '0')->orderBy('updated_at', 'desc')->paginate(10);
+        $query = Ticket::with(array('comments' => function($q){ $q->orderBy('updated_at', 'desc'); }))
+            ->where('ticket_admin_id', '!=', $admin_id)
+            ->where('ticket_active', false)
+            ->where('ticket_finish', false)
+            ->where('ticket_drop', false)
+            ->orderBy('updated_at', 'desc')->paginate(10);
         return view('admin.index')->with('tickets', $query);
 
     }
@@ -60,7 +62,7 @@ class AdminsController extends Controller
         $tickets = Ticket::with(array('comments' => function($q)
         {
             $q->orderBy('updated_at', 'desc');
-        }))->where('ticket_admin_id', $admin_id)->where('ticket_finish', 0)->orderBy('updated_at', 'desc')->get();
+        }))->where('ticket_admin_id', $admin_id)->where('ticket_finish', false)->orderBy('updated_at', 'desc')->get();
 
         return view('admin.pending')->with('pending', $tickets);
     }
@@ -116,7 +118,7 @@ class AdminsController extends Controller
     // TICKET ARCHIVE || LIST OF SOLVED TICKETS
     public function archive()
     {
-        $query = Ticket::where('ticket_finish', 1)->orderBy('updated_at', 'desc')->paginate(10);
+        $query = Ticket::where('ticket_finish', true)->where('ticket_drop', false)->orderBy('updated_at', 'desc')->paginate(10);
         return view('admin.archive')->with('query', $query);
 
     }

@@ -53,6 +53,14 @@
                         </li>
 
 
+                        @if(url()->current() == "http://127.0.0.1:8000/userArchive")
+                            <li class="nav-item active">
+                        @else
+                            <li class="nav-item">
+                        @endif
+                            <a class="nav-link" href="/userArchive">My Archive</a>
+                        </li>
+
                         @if(url()->current() == "http://127.0.0.1:8000/archive")
                             <li class="nav-item active">
                         @else
@@ -144,142 +152,149 @@
 </body>
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script>
-    // EDIT TICKET
-    $(".edit").click(function(){
-        $('#submit').hide();
+    $( document ).ready(function(){
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        var id = this.id;
-        $.ajax({type:"GET", url: "/user/"+id+"/edit", success: function(result){
-            $('#submit').val("Update");
-            $('#title').val(result.ticket_title);
-            $('#description').val(result.ticket_description);
-            $('#importance').val(result.ticket_importance);
-            $('#myModal').modal("show");
-        }});
 
-        $("#update").click(function(){
+        // EDIT TICKET
+        $(".edit").click(function(){
+            $('#submit').hide();
+            var id = this.id;
+            $.ajax({type:"GET", url: "/user/"+id+"/edit", success: function(result){
+                $('#submit').val("Update");
+                $('#title').val(result.ticket_title);
+                $('#description').val(result.ticket_description);
+                $('#importance').val(result.ticket_importance);
+                $('#myModal').modal("show");
+            }});
+
+            $("#update").click(function(){
+                var title = $('#title').val();
+                var description = $('#description').val();
+                var importance = $('#importance').val();
+                $.ajax({
+                    url:"/user/"+id+"/update",
+                    type:"post", 
+                    data:
+                    {
+                        title:title,
+                        description:description,
+                        importance:importance
+                    }, 
+                    success: function(result){
+                        location.reload(true);
+                }});
+            });
+            
+        });
+
+        // TO HIDE UPDATE BUTTON IN MODAL
+        $("#create").click(function(){
+            $('#update').hide();
+        });
+
+        // CREATE TICKET
+        $("#submit").click(function(){
             var title = $('#title').val();
             var description = $('#description').val();
             var importance = $('#importance').val();
             $.ajax({
-                url:"/user/"+id+"/update",
-                type:"post", 
+                type:"POST",
+                url: "/user",
                 data:
                 {
                     title:title,
                     description:description,
                     importance:importance
-                }, 
+                },
                 success: function(result){
                     location.reload(true);
-            }});
+                }
+            });
         });
         
-    });
-
-    // TO HIDE UPDATE BUTTON IN MODAL
-    $("#create").click(function(){
-        $('#update').hide();
-    });
-
-    // CREATE TICKET
-    $("#submit").click(function(){
-        var title = $('#title').val();
-        var description = $('#description').val();
-        var importance = $('#importance').val();
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            type:"POST",
-            url: "/user",
-            data:
-            {
-                title:title,
-                description:description,
-                importance:importance
-            },
-            success: function(result){
+        // DELETE TICKET
+        $(".delete").click(function(){
+            var r = confirm("Confirm to delete ticket.");
+            if (r == true) {
+                var id = this.id;
+                $.ajax({
+                    type:"DELETE",
+                    url:"/user/"+id+"/delete",
+                    success: function(result){
+                        
+                    }
+                });
                 location.reload(true);
+            } else {
+                window.close();
             }
         });
-    });
-    
-    // DELETE TICKET
-    $(".delete").click(function(){
-        var r = confirm("Confirm to delete ticket.");
-        if (r == true) {
-            var id = this.id;
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
+
+        // SEND COMMENT IN TICKET
+        $("#send").click(function(){
+            var id = $("#id").val();
+            var comment = $("#comment").val();
             $.ajax({
-                type:"DELETE",
-                url:"/user/"+id+"/delete",
-                success: function(result){
-                    
+                type:"POST",
+                url: "/user/"+id+"/comment",
+                data:
+                {
+                    id:id,
+                    comment:comment
+                },
+                success: function(){
+                    location.reload(true);
                 }
             });
-            location.reload(true);
-        } else {
-            window.close();
-        }
-    });
+        });
 
-    // SEND COMMENT IN TICKET
-    $("#send").click(function(){
-        var id = $("#id").val();
-        var comment = $("#comment").val();
-        $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+        //CLOSE/SOLVE THE TICKET
+        $("#solve").click(function(){
+            var id = $('#id').val();
+            $.ajax({
+                type:"POST",
+                url: "/user/"+id+"/solve",
+                data:
+                {
+                    id:id
+                },
+                success: function(result){
+                    window.location.href = '/archive';
+                }
+            });
         });
-        $.ajax({
-            type:"POST",
-            url: "/user/"+id+"/comment",
-            data:
-            {
-                id:id,
-                comment:comment
-            },
-            success: function(){
-                location.reload(true);
-            }
-        });
-    });
 
-    //CLOSE/SOLVE THE TICKET
-    $("#solve").click(function(){
-        var id = $('#id').val();
-        $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+        //SEARCH IN THE TABLE
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
         });
-        $.ajax({
-            type:"POST",
-            url: "/user/"+id+"/solve",
-            data:
-            {
-                id:id
-            },
-            success: function(result){
-                window.location.href = '/archive';
-            }
-        });
-    });
 
-    //SEARCH IN THE TABLE
-    
+        //SEARCH JQUERY AJAX
+        // $("#myInput").on("keyup", function() {
+        //     var value = $(this).val().toLowerCase();
+        //     $.ajax({
+        //         type:"POST",
+        //         url: "/search",
+        //         data:
+        //         {
+        //             data:value
+        //         },
+        //         success: function(result){
+        //             $("#myTable").empty();
+        //             for(i = 0; i < result.length; i++){
+        //                 $("#logs_table").append("<tr><td>"+ day + "-" + m + "-" + y +"</td><td>"+result[i].admin_name+"</td></tr>");
+        //             }
+        //         }
+        //     });
+        // });
+    });
 </script>
 </html>
 

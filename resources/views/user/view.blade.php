@@ -6,11 +6,7 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    @if($ticket->ticket_finish == 1)
-                        <a class="btn btn-secondary" href="/archive">Back</a>
-                    @else
-                        <a class="btn btn-secondary" href="/user">Back</a>
-                    @endif
+                        <a class="btn btn-secondary" href="{!! URL::previous() !!}">Back</a>
                 </div>
 
                 <div class="card-body">
@@ -28,18 +24,30 @@
                                     <h5 class="mt-0">{{$ticket->ticket_title}}</h5> 
                                     <p class="">{{$ticket->ticket_description}}</p>
                                     <small>{{$ticket->ticket_importance}}</small><br>
-                                    <small>{{$ticket->created_at}}</small>
+                                    <small>
+                                        @if(date('Y-m-d', strtotime($ticket->created_at)) < date('Y-m-d', strtotime(now())))
+                                                {{date('j F, Y', strtotime($ticket->created_at))}}
+                                            @else
+                                                {{ $ticket->created_at->diffForHumans() }}
+                                            @endif
+                                    </small>
                                     
                                     {{-- Comment List --}}
-                                    @foreach($ticket->comments as $key)
+                                    @foreach($ticket->comments as $comment)
                                     <div class="media mt-3">
                                          <a class="pr-3" href="#"><img alt="Bootstrap Media Another Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-2.jpg" /></a>
                                         <div class="media-body">
                                             <h5 class="mt-0">
-                                                {{$key->user_name}}
+                                                {{$comment->user_name}}
                                             </h5> 
-                                            <p>{{$key->comment}}</p>
-                                            <small>{{$key->created_at}}</small><hr>
+                                            <p>{{$comment->comment}}</p>
+                                            <small>
+                                                @if(date('Y-m-d', strtotime($comment->created_at)) < date('Y-m-d', strtotime(now())))
+                                                    {{date('j F, Y', strtotime($comment->created_at))}}
+                                                @else
+                                                    {{ $comment->created_at->diffForHumans() }}
+                                                @endif
+                                            </small><hr>
                                         </div>
                                     </div>
                                     @endforeach

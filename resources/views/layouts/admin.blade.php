@@ -143,15 +143,15 @@
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script>
     $( document ).ready(function(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+        });
 
         // ACCEPT TICKET FROM THE POLL
         $(".accept").click(function(){
             var id = this.id;
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
             $.ajax({
                 type:"POST",
                 url: "/admin/"+id+"/add",
@@ -167,11 +167,6 @@
         $("#send").click(function(){
             var id = $("#id").val();
             var comment = $("#comment").val();
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
             $.ajax({
                 type:"POST",
                 url: "/admin/comment",
@@ -189,11 +184,6 @@
         // RETURN TICKET TO THE POLL
         $("#return").click(function(){
             var id = $("#id").val();
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
             $.ajax({
                 type:"POST",
                 url: "/admin/"+id+"/return",
@@ -210,11 +200,6 @@
         //CLOSE/SOLVE THE TICKET
         $("#solve").click(function(){
             var id = $('#id').val();
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
             $.ajax({
                 type:"POST",
                 url: "/admin/"+id+"/solve",
@@ -231,11 +216,6 @@
         //RE-OPEN TICKET
         $('#open_ticket').click(function(){
             var id = $('#id').val();
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
             $.ajax({
                 type:"POST",
                 url: "/admin/"+id+"/open",
@@ -252,11 +232,6 @@
         //DISPLAY THE LOGS OF TICKET
         $(".logs").click(function(){
             var id = this.id;
-            $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
             $.ajax({
                 type:"GET",
                 url: "/admin/"+id+"/logs",
@@ -283,6 +258,14 @@
         //EMPTY THE MODAL OF LOGS
         $(".cancel").click(function(){
             $("#logs_table > tbody").empty();
+        });
+
+        //SEARCH IN THE TABLE
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
         });
     });
 </script>
