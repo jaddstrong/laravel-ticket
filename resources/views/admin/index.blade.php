@@ -26,6 +26,7 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                <th>Status</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Comment</th>
@@ -44,6 +45,7 @@
                                             {{ $key->updated_at->diffForHumans() }}
                                         @endif
                                     </td>
+                                    <td>{{$key->ticket_status}}</td>
                                     <td>{{$key->ticket_title}}</td>
                                     <td>{{$key->ticket_description}}</td>
                                     @if(count($key->comments))

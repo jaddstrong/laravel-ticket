@@ -21,9 +21,10 @@ class CreateTicketsTable extends Migration
             $table->set('ticket_importance', ['level1', 'level2', 'level3']);
             $table->string('ticket_assign')->nullable();
             $table->bigInteger('ticket_admin_id')->nullable();
-            $table->boolean('ticket_active');
-            $table->boolean('ticket_finish');
-            $table->boolean('ticket_drop');
+            $table->set('ticket_status', ['Open', 'Pending', 'Solve', 'Return', 'Drop', 'ReOpen']);
+            // $table->boolean('ticket_active');
+            // $table->boolean('ticket_finish');
+            // $table->boolean('ticket_drop');
             $table->timestamps();
         });
     }

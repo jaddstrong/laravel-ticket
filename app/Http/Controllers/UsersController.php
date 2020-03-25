@@ -19,7 +19,12 @@ class UsersController extends Controller
     {
         $user_id = Auth::user()->id;
         $user_type = Auth::user()->user_type;
-        $query = Ticket::where('user_id', $user_id)->where('ticket_drop', false)->orderBy('created_at', 'desc')->paginate(10);
+        $query = Ticket::where('user_id', $user_id)
+            ->where('ticket_status', 'Open')
+            ->orWhere('ticket_status', 'Pending')
+            ->orWhere('ticket_status', 'Return')
+            ->orWhere('ticket_status', 'ReOpen')
+            ->orderBy('created_at', 'desc')->paginate(10);
         return view('user.index')->with('query', $query);
 
     }
@@ -55,9 +60,7 @@ class UsersController extends Controller
         $ticket->ticket_description = $request->description;
         $ticket->ticket_importance = $request->importance;
         $ticket->ticket_admin_id = 0;
-        $ticket->ticket_active = false;
-        $ticket->ticket_finish = false;
-        $ticket->ticket_drop = false;
+        $ticket->ticket_status = 'Open';
         $ticket->save();
 
         return redirect('/user');
@@ -121,7 +124,7 @@ class UsersController extends Controller
     public function destroy($id)
     {
         $ticket = Ticket::find($id);
-        $ticket->ticket_drop = true;
+        $ticket->ticket_status = 'Drop';
         $ticket->save();
 
         return redirect('/user');
@@ -143,7 +146,7 @@ class UsersController extends Controller
     // TICKET ARCHIVE || LIST OF SOLVED TICKETS
     public function archive()
     {
-        $query = Ticket::where('ticket_finish', true)->where('ticket_drop', false)->orderBy('created_at', 'desc')->paginate(10);
+        $query = Ticket::where('ticket_status', 'Solve')->orderBy('created_at', 'desc')->paginate(10);
         return view('user.archive')->with('query', $query);
     }
 
@@ -151,8 +154,7 @@ class UsersController extends Controller
     public function userArchive()
     {
         $query = Ticket::where('user_id', Auth::user()->id)
-            ->where('ticket_finish', true)
-            ->where('ticket_drop', false)
+            ->where('ticket_status', 'Solve')
             ->orderBy('updated_at', 'desc')->paginate(10);
 
         return view('user.myArchive')->with('query', $query);

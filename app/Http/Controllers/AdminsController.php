@@ -16,9 +16,9 @@ class AdminsController extends Controller
         $admin_id = Auth::user()->id;
         $query = Ticket::with(array('comments' => function($q){ $q->orderBy('updated_at', 'desc'); }))
             ->where('ticket_admin_id', '!=', $admin_id)
-            ->where('ticket_active', false)
-            ->where('ticket_finish', false)
-            ->where('ticket_drop', false)
+            ->where('ticket_status', 'Open')
+            ->orWhere('ticket_status', 'Return')
+            ->orWhere('ticket_status', 'ReOpen')
             ->orderBy('updated_at', 'desc')->paginate(10);
         return view('admin.index')->with('tickets', $query);
 
@@ -49,7 +49,7 @@ class AdminsController extends Controller
         $ticket = Ticket::find($id);
         $ticket->ticket_assign = $admin_name;
         $ticket->ticket_admin_id = $admin_id;
-        $ticket->ticket_active = true;
+        $ticket->ticket_status = 'Pending';
         $ticket->save();
 
         return redirect('/admin/'.$id.'/show');
@@ -59,10 +59,10 @@ class AdminsController extends Controller
     public function pending()
     {
         $admin_id = Auth::user()->id;
-        $tickets = Ticket::with(array('comments' => function($q)
-        {
-            $q->orderBy('updated_at', 'desc');
-        }))->where('ticket_admin_id', $admin_id)->where('ticket_finish', false)->orderBy('updated_at', 'desc')->get();
+        $tickets = Ticket::with(array('comments' => function($q){ $q->orderBy('updated_at', 'desc'); }))
+                ->where('ticket_admin_id', $admin_id)
+                ->where('ticket_status', 'Pending')
+                ->orderBy('updated_at', 'desc')->get();
 
         return view('admin.pending')->with('pending', $tickets);
     }
@@ -84,8 +84,8 @@ class AdminsController extends Controller
     public function return(Request $request)
     {
         $ticket = Ticket::find($request->input('id'));
+        $ticket->ticket_status = 'Return';
         $ticket->ticket_admin_id = 0;
-        $ticket->ticket_active = 0;
         $ticket->save();
 
     }
@@ -94,7 +94,7 @@ class AdminsController extends Controller
     public function solve($id)
     {
         $ticket = Ticket::find($id);
-        $ticket->ticket_finish = 1;
+        $ticket->ticket_status = 'Solve';
         $ticket->save();
 
     }
@@ -103,7 +103,8 @@ class AdminsController extends Controller
     public function open($id)
     {
         $ticket = Ticket::find($id);
-        $ticket->ticket_finish = 0;
+        $ticket->ticket_status = 'ReOpen';
+        $ticket->ticket_admin_id = 0;
         $ticket->save();
     }
 
@@ -118,7 +119,7 @@ class AdminsController extends Controller
     // TICKET ARCHIVE || LIST OF SOLVED TICKETS
     public function archive()
     {
-        $query = Ticket::where('ticket_finish', true)->where('ticket_drop', false)->orderBy('updated_at', 'desc')->paginate(10);
+        $query = Ticket::where('ticket_status', 'Solve')->orderBy('updated_at', 'desc')->paginate(10);
         return view('admin.archive')->with('query', $query);
 
     }

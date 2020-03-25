@@ -44,18 +44,7 @@
                                                 {{ $key->created_at->diffForHumans() }}
                                             @endif
                                         </td>
-                                        <td>
-                                            @if($key->ticket_finish == 0)
-                                                @if($key->ticket_active == 0)
-                                                    <?php echo "Open"; ?>
-                                                @endif
-                                                @if($key->ticket_active == 1)
-                                                    <?php echo "Active"; ?>
-                                                @endif
-                                            @elseif($key->ticket_finish == 1)
-                                            <?php echo "Solve"; ?>
-                                            @endif
-                                        </td>
+                                        <td>{{$key->ticket_status}}</td>
                                         <td>{{$key->ticket_title}}</td>
                                         <td>{{$key->ticket_importance}}</td>
                                         <td>{{$key->ticket_assign}}</td>

@@ -50,7 +50,7 @@
                                         <div class="media-body">
                                             
                                             <input type="hidden" id="id" name="id" value="{{$query->id}}">
-                                            @if($query->ticket_finish == 1)
+                                            @if($query->ticket_status == 'Solve')
                                                 <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
                                             @elseif($query->ticket_admin_id == Auth::user()->id)
                                                 <textarea class="form-control" rows="3" id="comment"></textarea><br>
