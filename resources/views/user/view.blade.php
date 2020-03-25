@@ -56,7 +56,7 @@
                                    <div class="media mt-3">
                                         <div class="media-body">
                                             <input type="hidden" id="id" name="id" value="{{$ticket->id}}">
-                                            @if($ticket->ticket_finish == 1 && $ticket->user_id == Auth::user()->id)
+                                            @if($ticket->ticket_status == 'Solve' && $ticket->user_id == Auth::user()->id)
                                                 <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
                                             @elseif($ticket->user_id == Auth::user()->id)
                                                 <textarea class="form-control" rows="3" id="comment"></textarea><br>
