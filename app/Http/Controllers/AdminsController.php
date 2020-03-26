@@ -104,21 +104,18 @@ class AdminsController extends Controller
     //PICK-UP TICKET FROM THE POLL
     public function add($id)
     {
-        $admin_id = Auth::user()->id;
-        $admin_name = Auth::user()->name;
-
         // Create logs
         $logs = new Logs;
-        $logs->active_id = $admin_id;
         $logs->ticket_id = $id;
-        $logs->admin_id = $admin_id;
-        $logs->admin_name = $admin_name;
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "has accepted on this ticket.";
         $logs->save();
 
         //Update ticket
         $ticket = Ticket::find($id);
-        $ticket->ticket_assign = $admin_name;
-        $ticket->ticket_admin_id = $admin_id;
+        $ticket->ticket_assign = Auth::user()->name;
+        $ticket->ticket_admin_id = Auth::user()->id;
         $ticket->ticket_status = 'Pending';
         $ticket->save();
 
@@ -147,6 +144,14 @@ class AdminsController extends Controller
         $comment->comment = $request->input('comment');
         $comment->save();
 
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $request->input('id');
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "commented on this ticket.";
+        $logs->save();
+
         return redirect('/admin/'.$request->input('id').'/show');
     }
 
@@ -158,6 +163,14 @@ class AdminsController extends Controller
         $ticket->ticket_admin_id = 0;
         $ticket->save();
 
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $request->input('id');
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "returned this ticket.";
+        $logs->save();
+
     }
 
     //CLOSE THE TICKET
@@ -166,6 +179,14 @@ class AdminsController extends Controller
         $ticket = Ticket::find($id);
         $ticket->ticket_status = 'Solve';
         $ticket->save();
+
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $id;
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "closed this ticket.";
+        $logs->save();
 
     }
 
@@ -176,6 +197,14 @@ class AdminsController extends Controller
         $ticket->ticket_status = 'ReOpen';
         $ticket->ticket_admin_id = 0;
         $ticket->save();
+
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $id;
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "re-open this ticket.";
+        $logs->save();
     }
 
     // TICKET LOGS

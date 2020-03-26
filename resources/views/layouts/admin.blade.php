@@ -32,9 +32,6 @@
         textarea{
             resize:none;
         }
-        th, td{
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -119,7 +116,7 @@
         </main>
 
         <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog modal-sm">
+            <div class="modal-dialog modal-lg">
             
                 <!-- Modal content-->
                 <div class="modal-content">
@@ -132,7 +129,7 @@
                             <thead>
                                 <tr>
                                     <td>Date</td>
-                                    <td>Assigned</td>
+                                    <td>Action</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -256,26 +253,23 @@
         });
 
         //DISPLAY THE LOGS OF TICKET
-        $(".logs").click(function(){
+        $(".data-table").on('click', '.logs', function(){
             var id = this.id;
             $.ajax({
-                type:"GET",
+                type:"POST",
                 url: "/admin/"+id+"/logs",
                 success: function(result){
                     var i;
                     for(i = 0; i < result.length; i++){
-                        var format_date = new Date(result[i].updated_at);
-                        var day = format_date.getDate();
-                        var m = format_date.getMonth();
-                        m += 1;
-                        var y = format_date.getFullYear();
-                        if (day < 10) {
-                            day = "0" + day;
-                        }
-                        if (m < 10) {
-                            m = "0" + m;
-                        }
-                        $("#logs_table").append("<tr><td>"+ day + "-" + m + "-" + y +"</td><td>"+result[i].admin_name+"</td></tr>");
+                        // var format_date = new Date(result[i].updated_at);
+                        var date = new Date(result[i].created_at).toUTCString();
+                        // if (day < 10) {
+                        //     day = "0" + day;
+                        // }
+                        // if (m < 10) {
+                        //     m = "0" + m;
+                        // }
+                        $("#logs_table").append("<tr><td>"+date+"</td><td>"+result[i].name+" "+result[i].action+"</td></tr>");
                     }
                 }
             });
@@ -286,13 +280,6 @@
             $("#logs_table > tbody").empty();
         });
 
-        //SEARCH IN THE TABLE
-        $("#myInput").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
     });
 </script>
 </html>

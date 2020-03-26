@@ -33,6 +33,9 @@ class UsersController extends Controller
                     ->orderBy('created_at', 'desc')->get();
     
                 return Datatables::of($data)
+                    ->editColumn('created_at', function ($user) {
+                        return $user->created_at->format('Y/m/d H:i:s');
+                    })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
     
@@ -51,6 +54,9 @@ class UsersController extends Controller
                 $data = Ticket::where('user_id', Auth::user()->id)->where('ticket_status', 'Solve')->orderBy('updated_at', 'desc')->get();
     
                 return Datatables::of($data)
+                    ->editColumn('created_at', function ($user) {
+                        return $user->created_at->format('Y/m/d H:i:s');
+                    })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
     
@@ -69,6 +75,9 @@ class UsersController extends Controller
                 $data = Ticket::where('ticket_status', 'Solve')->orderBy('created_at', 'desc')->get();
     
                 return Datatables::of($data)
+                    ->editColumn('created_at', function ($user) {
+                        return $user->created_at->format('Y/m/d H:i:s');
+                    })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
     
@@ -158,6 +167,14 @@ class UsersController extends Controller
         $comment->comment = $request->comment;
         $comment->save();
 
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $id;
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "commented on this ticket.";
+        $logs->save();
+
         return redirect('/user/'.$request->id);
     }
 
@@ -180,6 +197,14 @@ class UsersController extends Controller
         $ticket->ticket_status = 'Solve';
         $ticket->save();
 
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $id;
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "has closed this ticket.";
+        $logs->save();
+
     }
 
     //RE-OPEN THE TICKET
@@ -188,6 +213,14 @@ class UsersController extends Controller
         $ticket = Ticket::find($request->id);
         $ticket->ticket_status = 'ReOpen';
         $ticket->save();
+
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $id;
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "has re-open this ticket.";
+        $logs->save();
 
     }
   

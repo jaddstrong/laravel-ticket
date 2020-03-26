@@ -27,7 +27,7 @@ Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
     Route::get('/admin', 'AdminsController@index');
     Route::get('/admin/{id}/show','AdminsController@show');
     Route::get('/admin/{id}/add','AdminsController@add');
-    Route::get('/admin/{id}/logs','AdminsController@logs');
+    Route::post('/admin/{id}/logs','AdminsController@logs');
     Route::get('/admin/pending', 'AdminsController@pending');
     Route::post('/admin/comment', 'AdminsController@comment');
     Route::post('/admin/{id}/return', 'AdminsController@return');

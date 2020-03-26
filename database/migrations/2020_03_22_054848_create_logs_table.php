@@ -15,10 +15,10 @@ class CreateLogsTable extends Migration
     {
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('active_id');
             $table->bigInteger('ticket_id');
-            $table->bigInteger('admin_id');
-            $table->string('admin_name');
+            $table->bigInteger('user_id');//USER OR ADMIN
+            $table->string('name');//NAME OF EITHER USER OR ADMIN
+            $table->string('action');
             $table->timestamps();
         });
     }

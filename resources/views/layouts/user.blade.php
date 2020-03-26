@@ -273,10 +273,10 @@
                     id:id,
                     comment:comment
                 },
-                success: function(){
-                    location.reload(true);
+                success: function(result){
                 }
             });
+            location.reload(true);
         });
 
         //CLOSE/SOLVE THE TICKET
@@ -285,14 +285,11 @@
             $.ajax({
                 type:"POST",
                 url: "/user/solve",
-                data:
-                {
-                    id:id
-                },
+                data:{ id:id },
                 success: function(result){
-                    window.location.href = '/userArchive';
                 }
             });
+            window.location.href = '/userArchive';
         });
 
         //RE-OPEN TICKET
@@ -301,14 +298,11 @@
             $.ajax({
                 type:"POST",
                 url: "/user/reopen",
-                data:
-                {
-                    id:id
-                },
+                data: { id:id },
                 success: function(result){
-                    window.location.href = '/user';
                 }
             });
+            window.location.href = '/user';
         });
         
     });
