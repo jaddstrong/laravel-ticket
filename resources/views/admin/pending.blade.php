@@ -6,14 +6,7 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    <div class="row">
-                        <div class="col align-self-start">
-                            <h3>Pending Tickets</h3>
-                        </div>
-                        <div class="col align-self-end">
-                            <input class="form-control" type="text" id="myInput" placeholder="Search...">
-                        </div>
-                    </div>
+                    <h3>Pending Tickets</h3>
                 </div>
                 <div class="card-body">
                     @if (session('status'))
@@ -21,7 +14,22 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <table class="table table-hover">
+                    <table class="table table-bordered data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Importance</th>
+                                <th>Assign</th>
+                                <th width="150px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    {{-- <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -64,7 +72,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table> --}}
                 </div>
 
             </div>

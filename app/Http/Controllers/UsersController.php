@@ -4,47 +4,87 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
+use DataTables;
 use App\User;
 use App\Ticket;
 use App\Comment;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $user_id = Auth::user()->id;
-        $user_type = Auth::user()->user_type;
-        $query = Ticket::where('user_id', $user_id)
-            ->where('ticket_status', 'Open')
-            ->orWhere('ticket_status', 'Pending')
-            ->orWhere('ticket_status', 'Return')
-            ->orWhere('ticket_status', 'ReOpen')
-            ->orderBy('created_at', 'desc')->paginate(10);
-        return view('user.index')->with('query', $query);
-
+        return view('user.index');
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    //DISPLAY CREATED TICKET THAT ARE OPEN,PENDING,RETURN,REOPEN
+    public function dataTables(Request $request)
     {
-        // 
+        $url = URL::previous();
+        if($url == 'http://127.0.0.1:8000/user'){
+            if ($request->ajax()) {
+                $url = $request->url();
+                $user_id = Auth::user()->id;
+                $user_type = Auth::user()->user_type;
+                $data = Ticket::where('user_id', $user_id)
+                    ->where('ticket_status', 'Open')
+                    ->orWhere('ticket_status', 'Pending')
+                    ->orWhere('ticket_status', 'Return')
+                    ->orWhere('ticket_status', 'ReOpen')
+                    ->orderBy('created_at', 'desc')->get();
+    
+                return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+    
+                        $btn = '<a href="/user/'.$row->id.'" class="btn btn-sm btn-primary">View</a> 
+                                <a id="'.$row->id.'" href="#" class="btn btn-sm btn-primary edit">Edit</a>
+                                <a id="'.$row->id.'" href="#" class="btn btn-sm btn-danger delete">Drop</a>';
+    
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            }
+            return view('user.index');
+        }elseif($url == 'http://127.0.0.1:8000/userArchive'){
+            if ($request->ajax()) {
+                $data = Ticket::where('user_id', Auth::user()->id)->where('ticket_status', 'Solve')->orderBy('updated_at', 'desc')->get();
+    
+                return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+    
+                        $btn = '<a href="/user/'.$row->id.'" class="btn btn-sm btn-primary">View</a>';
+    
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            }
+            return view('user.myArchive');
+        }elseif($url == 'http://127.0.0.1:8000/archive'){
+            if ($request->ajax()) {
+                $user_id = Auth::user()->id;
+                $user_type = Auth::user()->user_type;
+                $data = Ticket::where('ticket_status', 'Solve')->orderBy('created_at', 'desc')->get();
+    
+                return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+    
+                        $btn = '<a href="/user/'.$row->id.'" class="btn btn-sm btn-primary">View</a>';
+    
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            }
+            return view('user.archive');
+        }
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    //CREATE TICKET
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -66,24 +106,13 @@ class UsersController extends Controller
         return redirect('/user');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $ticket = Ticket::find($id);
         return view('user.view')->with('ticket', $ticket);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    //GET THE DATA OF A TICKET
     public function edit($id)
     {
         $ticket = Ticket::find($id);
@@ -91,13 +120,7 @@ class UsersController extends Controller
         
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    //UPDATE A TICKET
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -115,12 +138,7 @@ class UsersController extends Controller
         return redirect('/user');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    //SET THE TICKET STATUS TO DROP && THE TICKET STILL EXIST TO THE DATABASE
     public function destroy($id)
     {
         $ticket = Ticket::find($id);
@@ -144,37 +162,33 @@ class UsersController extends Controller
     }
 
     // TICKET ARCHIVE || LIST OF SOLVED TICKETS
-    public function archive()
+    public function archive(Request $request)
     {
-        $query = Ticket::where('ticket_status', 'Solve')->orderBy('created_at', 'desc')->paginate(10);
-        return view('user.archive')->with('query', $query);
+        return view('user.archive');
     }
 
-    // USER`S TICKET ARCHIVE || LIST OF SOLVED TICKETS OF THE USER
-    public function userArchive()
+    // // USER`S TICKET ARCHIVE || LIST OF SOLVED TICKETS OF THE USER
+    public function userArchive(Request $request)
     {
-        $query = Ticket::where('user_id', Auth::user()->id)
-            ->where('ticket_status', 'Solve')
-            ->orderBy('updated_at', 'desc')->paginate(10);
-
-        return view('user.myArchive')->with('query', $query);
+        return view('user.myArchive');
     }
 
     //CLOSE THE TICKET
-    public function solve($id)
+    public function solve(Request $request)
     {
-        $ticket = Ticket::find($id);
-        $ticket->ticket_finish = 1;
+        $ticket = Ticket::find($request->id);
+        $ticket->ticket_status = 'Solve';
         $ticket->save();
 
     }
 
-    //SEARCH
-    // public function search(Request $request)
-    // {
-    //     $data = $request->data;
-    //     $search = Ticket::where('ticket_title', 'like', '%'.$data.'%')->get();
+    //RE-OPEN THE TICKET
+    public function reopen(Request $request)
+    {
+        $ticket = Ticket::find($request->id);
+        $ticket->ticket_status = 'ReOpen';
+        $ticket->save();
 
-    //     return response()->json($search);
-    // }
+    }
+  
 }

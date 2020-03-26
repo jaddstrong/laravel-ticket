@@ -6,7 +6,11 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
+                    @if(URL::previous() == 'http://127.0.0.1:8000/user')
+                        <a class="btn btn-secondary" href="/login">Back</a>
+                    @else
                         <a class="btn btn-secondary" href="{!! URL::previous() !!}">Back</a>
+                    @endif
                 </div>
 
                 <div class="card-body">
@@ -55,7 +59,7 @@
                                    {{-- Create Comment --}}
                                    <div class="media mt-3">
                                         <div class="media-body">
-                                            <input type="hidden" id="id" name="id" value="{{$ticket->id}}">
+                                                <input type="hidden" id="id" name="id" value="{{$ticket->id}}">
                                             @if($ticket->ticket_status == 'Solve' && $ticket->user_id == Auth::user()->id)
                                                 <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
                                             @elseif($ticket->user_id == Auth::user()->id)

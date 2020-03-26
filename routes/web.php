@@ -18,9 +18,12 @@ Route::get('/', function () {
 });
 Route::get('/home', 'HomeController@index');
 
+Route::get('users', ['uses'=>'UsersController@dataTables', 'as'=>'users.index']);
+
 // ADMIN ROUTES
 Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function(){
 
+    Route::get('/adminDataTables', ['uses'=>'AdminsController@dataTables', 'as'=>'admin.dataTables']);
     Route::get('/admin', 'AdminsController@index');
     Route::get('/admin/{id}/show','AdminsController@show');
     Route::get('/admin/{id}/add','AdminsController@add');
@@ -38,6 +41,7 @@ Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
 // USER ROUTES
 Route::group(['middleware' => 'App\Http\Middleware\UserMiddleware'], function(){
     
+    Route::get('/userDataTables', ['uses'=>'UsersController@dataTables', 'as'=>'user.dataTables']);
     Route::get('/user', 'UsersController@index');
     Route::post('/user', 'UsersController@store');
     Route::get('/user/{id}', 'UsersController@show');
@@ -46,7 +50,8 @@ Route::group(['middleware' => 'App\Http\Middleware\UserMiddleware'], function(){
     Route::delete('/user/{id}/delete', 'UsersController@destroy');
     Route::post('/user/{id}/comment', 'UsersController@comment');
     Route::get('/archive', 'UsersController@archive');
-    Route::post('/user/{id}/solve', 'UsersController@solve');
+    Route::post('/user/solve', 'UsersController@solve');
+    Route::post('/user/reopen', 'UsersController@reopen');
     Route::get('/userArchive', 'UsersController@userArchive');
 
 });
