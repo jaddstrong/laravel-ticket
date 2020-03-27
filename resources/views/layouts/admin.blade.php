@@ -150,7 +150,6 @@
 {{-- <script src="{{ asset('js/jquery.js') }}"></script> --}}
 <script>
     $( document ).ready(function(){
-        CKEDITOR.replace( 'article-ckeditor' );
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -161,7 +160,7 @@
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.dataTables') }}",
+                ajax: "{{ route('dataTables') }}",
                 columns: [
                     {data: 'created_at', name: 'created_at'},
                     {data: 'ticket_status', name: 'ticket_status'},
@@ -174,104 +173,17 @@
             });    
         });
 
-        // ACCEPT TICKET FROM THE POLL
-        $(".accept").click(function(){
-            var id = this.id;
-            $.ajax({
-                type:"POST",
-                url: "/admin/"+id+"/add",
-                data:
-                {
-                    id:id
-                },
-                success: function(result){}
-            });
-        });
-
-        // SEND COMMENT TO A TICKET
-        $("#send").click(function(){
-            CKEDITOR.instances['article-ckeditor'].updateElement();
-            var id = $("#id").val();
-            var comment = $("#article-ckeditor").val();
-            $.ajax({
-                type:"POST",
-                url: "/admin/comment",
-                data:
-                {
-                    id:id,
-                    comment:comment
-                },
-                success: function(result){
-                    location.reload(true);
-                }
-            });
-        });
-        
-        // RETURN TICKET TO THE POLL
-        $("#return").click(function(){
-            var id = $("#id").val();
-            $.ajax({
-                type:"POST",
-                url: "/admin/"+id+"/return",
-                data:
-                {
-                    id:id
-                },
-                success: function(result){
-                    window.location.href = '/admin/pending';
-                }
-            });
-        });
-
-        //CLOSE/SOLVE THE TICKET
-        $("#solve").click(function(){
-            var id = $('#id').val();
-            $.ajax({
-                type:"POST",
-                url: "/admin/"+id+"/solve",
-                data:
-                {
-                    id:id
-                },
-                success: function(result){
-                    window.location.href = '/admin/pending';
-                }
-            });
-        });
-
-        //RE-OPEN TICKET
-        $('#open_ticket').click(function(){
-            var id = $('#id').val();
-            $.ajax({
-                type:"POST",
-                url: "/admin/"+id+"/open",
-                data:
-                {
-                    id:id
-                },
-                success: function(result){
-                    window.location.href = '/admin/archive';
-                }
-            });
-        });
-
         //DISPLAY THE LOGS OF TICKET
         $(".data-table").on('click', '.logs', function(){
             var id = this.id;
             $.ajax({
                 type:"POST",
-                url: "/admin/"+id+"/logs",
+                url: "/logs",
+                data:{id:id},
                 success: function(result){
                     var i;
                     for(i = 0; i < result.length; i++){
-                        // var format_date = new Date(result[i].updated_at);
                         var date = new Date(result[i].created_at).toUTCString();
-                        // if (day < 10) {
-                        //     day = "0" + day;
-                        // }
-                        // if (m < 10) {
-                        //     m = "0" + m;
-                        // }
                         $("#logs_table").append("<tr><td>"+date+"</td><td>"+result[i].name+" "+result[i].action+"</td></tr>");
                     }
                 }

@@ -18,82 +18,18 @@ class AdminsController extends Controller
         return view('admin.index');
     }
 
-    //DATA-TABLES TICKET POOL
-    public function dataTables(Request $request)
+    //LIST OF ACCEPTED TICKET
+    public function pending()
     {
-        $url = URL::previous();
-        if($url == 'http://127.0.0.1:8000/admin'){
-            if ($request->ajax()) {
-                $admin_id = Auth::user()->id;
-                $data = Ticket::with(array('comments' => function($q){ $q->orderBy('updated_at', 'desc')->first(); }))
-                    ->where('ticket_admin_id', '!=', $admin_id)
-                    ->where('ticket_status', 'Open')
-                    ->orWhere('ticket_status', 'Return')
-                    ->orWhere('ticket_status', 'ReOpen')
-                    ->orderBy('updated_at', 'desc')->get();
-    
-                return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-    
-                        $btn = '<a href="/admin/'.$row->id.'/show" class="btn btn-sm btn-primary">View</a>
-                                <a href="#" id="'.$row->id.'" class="btn btn-sm btn-secondary logs" data-toggle="modal" data-target="#myModal">Logs</a>
-                                <a href="/admin/'.$row->id.'/add" id="'.$row->id.'" class="btn btn-sm btn-success accept">Accept</a>';
-    
-                                            
-    
-                        return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            }
-            return view('admin.index');
-        }elseif($url == 'http://127.0.0.1:8000/admin/pending'){
-            if ($request->ajax()) {
-                $admin_id = Auth::user()->id;
-                $data = Ticket::with(array('comments' => function($q){ $q->orderBy('updated_at', 'desc')->first(); }))
-                        ->where('ticket_admin_id', $admin_id)
-                        ->where('ticket_status', 'Pending')
-                        ->orderBy('updated_at', 'desc')->get();
-    
-                return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-    
-                        $btn = '<a href="/admin/'.$row->id.'/show" class="btn btn-sm btn-primary">View</a>
-                                <a href="#" id="'.$row->id.'" class="btn btn-sm btn-secondary logs" data-toggle="modal" data-target="#myModal">Logs</a>';
-
-                        return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            }
-            return view('admin.pending');
-        }elseif($url == 'http://127.0.0.1:8000/admin/archive'){
-            if ($request->ajax()) {
-                $admin_id = Auth::user()->id;
-                $data = Ticket::with(array('comments' => function($q){ $q->orderBy('updated_at', 'desc')->first(); }))
-                        ->where('ticket_admin_id', $admin_id)
-                        ->where('ticket_status', 'Solve')
-                        ->orderBy('updated_at', 'desc')->get();
-    
-                return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-    
-                        $btn = '<a href="/admin/'.$row->id.'/show" class="btn btn-sm btn-primary">View</a>
-                                <a href="#" id="'.$row->id.'" class="btn btn-sm btn-secondary logs" data-toggle="modal" data-target="#myModal">Logs</a>';
-   
-                        return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            }
-            return view('admin.pending');
-        }
-
+        return view('admin.pending');
     }
 
+    // TICKET ARCHIVE || LIST OF SOLVED TICKETS
+    public function archive()
+    {
+        return view('admin.archive');
+    }
+    
     //DISPLAY THE TICKET INFORMATION AND COMMENTS
     public function show($id)
     {
@@ -119,40 +55,7 @@ class AdminsController extends Controller
         $ticket->ticket_status = 'Pending';
         $ticket->save();
 
-        return redirect('/admin/'.$id.'/show');
-    }
-
-    //LIST OF ACCEPTED TICKET
-    public function pending()
-    {
-        $admin_id = Auth::user()->id;
-        $tickets = Ticket::with(array('comments' => function($q){ $q->orderBy('updated_at', 'desc'); }))
-                ->where('ticket_admin_id', $admin_id)
-                ->where('ticket_status', 'Pending')
-                ->orderBy('updated_at', 'desc')->get();
-
-        return view('admin.pending')->with('pending', $tickets);
-    }
-
-    //COMMENT TO THE TICKET
-    public function comment(Request $request)
-    {
-        $comment = new Comment;
-        $comment->ticket_id = $request->input('id');
-        $comment->user_id = Auth::user()->id;
-        $comment->user_name = Auth::user()->name;
-        $comment->comment = $request->input('comment');
-        $comment->save();
-
-        // Create logs
-        $logs = new Logs;
-        $logs->ticket_id = $request->input('id');
-        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
-        $logs->name = Auth::user()->name;
-        $logs->action = "commented on this ticket.";
-        $logs->save();
-
-        return redirect('/admin/'.$request->input('id').'/show');
+        return redirect('/ticket/'.$id);
     }
 
     //RETURN THE TICKET TO POLL
@@ -169,23 +72,6 @@ class AdminsController extends Controller
         $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
         $logs->name = Auth::user()->name;
         $logs->action = "returned this ticket.";
-        $logs->save();
-
-    }
-
-    //CLOSE THE TICKET
-    public function solve($id)
-    {
-        $ticket = Ticket::find($id);
-        $ticket->ticket_status = 'Solve';
-        $ticket->save();
-
-        // Create logs
-        $logs = new Logs;
-        $logs->ticket_id = $id;
-        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
-        $logs->name = Auth::user()->name;
-        $logs->action = "closed this ticket.";
         $logs->save();
 
     }
@@ -207,19 +93,5 @@ class AdminsController extends Controller
         $logs->save();
     }
 
-    // TICKET LOGS
-    public function logs($id)
-    {
-        $logs = Logs::where('ticket_id', $id)->orderBy('created_at', 'desc')->get();
-        $array = array($logs);
-        return response()->json($logs);
-    }
 
-    // TICKET ARCHIVE || LIST OF SOLVED TICKETS
-    public function archive()
-    {
-        $query = Ticket::where('ticket_status', 'Solve')->orderBy('updated_at', 'desc')->paginate(10);
-        return view('admin.archive')->with('query', $query);
-
-    }
 }

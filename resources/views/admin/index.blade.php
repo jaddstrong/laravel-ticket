@@ -36,4 +36,22 @@
         </div>
     </div>
 </div>
+<script>
+    $( document ).ready(function(){
+        // ACCEPT TICKET FROM THE POLL
+        $(".accept").click(function(){
+            var id = this.id;
+            $.ajax({
+                type:"POST",
+                url: "/admin/"+id+"/add",
+                data:
+                {
+                    id:id
+                },
+                success: function(result){}
+            });
+        });
+    });
+
+</script>
 @endsection
