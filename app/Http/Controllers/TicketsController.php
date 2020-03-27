@@ -67,8 +67,12 @@ class TicketsController extends Controller
                     ->orderBy('created_at', 'desc')->get();
     
                 return Datatables::of($data)
-                    ->editColumn('created_at', function ($user) {
-                        return $user->created_at->format('Y/m/d H:i:s');
+                    ->editColumn('created_at', function ($time) {
+                        return $time->created_at->format('Y/m/d H:i:s');
+                    })
+                    ->editColumn('ticket_description', function ($des) {
+                        $des = strip_tags($des->ticket_description);
+                        return $des;
                     })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
@@ -91,6 +95,10 @@ class TicketsController extends Controller
                     ->editColumn('created_at', function ($user) {
                         return $user->created_at->format('Y/m/d H:i:s');
                     })
+                    ->editColumn('ticket_description', function ($des) {
+                        $des = strip_tags($des->ticket_description);
+                        return $des;
+                    })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
     
@@ -111,6 +119,10 @@ class TicketsController extends Controller
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
                         return $user->created_at->format('Y/m/d H:i:s');
+                    })
+                    ->editColumn('ticket_description', function ($des) {
+                        $des = strip_tags($des->ticket_description);
+                        return $des;
                     })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
@@ -134,6 +146,10 @@ class TicketsController extends Controller
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
                     return $user->created_at->format('Y/m/d H:i:s');
+                    })
+                    ->editColumn('ticket_description', function ($des) {
+                        $des = strip_tags($des->ticket_description);
+                        return $des;
                     })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
@@ -162,6 +178,10 @@ class TicketsController extends Controller
                     ->editColumn('created_at', function ($user) {
                         return $user->created_at->format('Y/m/d H:i:s');
                     })
+                    ->editColumn('ticket_description', function ($des) {
+                        $des = strip_tags($des->ticket_description);
+                        return $des;
+                    })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
     
@@ -185,6 +205,10 @@ class TicketsController extends Controller
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
                         return $user->created_at->format('Y/m/d H:i:s');
+                    })
+                    ->editColumn('ticket_description', function ($des) {
+                        $des = strip_tags($des->ticket_description);
+                        return $des;
                     })
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
