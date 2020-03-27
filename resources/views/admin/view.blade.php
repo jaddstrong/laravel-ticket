@@ -38,7 +38,7 @@
                                             <h5 class="mt-0">
                                                 {{$key->user_name}}
                                             </h5> 
-                                            <p>{{$key->comment}}</p>
+                                            <p>{!! $key->comment !!}</p>
                                             <small>{{$key->created_at}}</small><hr>
                                         </div>
                                     </div>
@@ -53,7 +53,7 @@
                                             @if($query->ticket_status == 'Solve')
                                                 <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
                                             @elseif($query->ticket_admin_id == Auth::user()->id)
-                                                <textarea class="form-control" rows="3" id="comment"></textarea><br>
+                                                <textarea class="form-control" rows="3" id="article-ckeditor"></textarea><br>
                                                 <button class="btn btn-primary send" id="send">Send</button>
                                                 <button class="btn btn-primary return" id="return">Return</button>
                                                 <button class="btn btn-primary solve" id="solve">Solve</button>
