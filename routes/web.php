@@ -37,7 +37,6 @@ Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
 
 });
 
-
 // USER ROUTES
 Route::group(['middleware' => 'App\Http\Middleware\UserMiddleware'], function(){
     

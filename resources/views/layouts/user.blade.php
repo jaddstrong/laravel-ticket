@@ -24,6 +24,7 @@
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -135,7 +136,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="description">Ticket description: </label>
-                                <textarea type="text" id="description" name="description" class="form-control" rows="5"></textarea>
+                                <textarea type="text" id="article-ckeditor" name="article-ckeditor" class="form-control" rows="5"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="importance">Importance level: </label>
@@ -161,6 +162,7 @@
 {{-- <script src="{{ asset('js/jquery.js') }}"></script> --}}
 <script  type="text/javascript">
     $( document ).ready(function(){
+        CKEDITOR.replace( 'article-ckeditor' );
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -263,8 +265,9 @@
 
         // SEND COMMENT IN TICKET
         $("#send").click(function(){
+            CKEDITOR.instances['article-ckeditor'].updateElement();
             var id = $("#id").val();
-            var comment = $("#comment").val();
+            var comment = $("#article-ckeditor").val();
             $.ajax({
                 type:"POST",
                 url: "/user/"+id+"/comment",

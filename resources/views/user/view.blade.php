@@ -44,7 +44,7 @@
                                             <h5 class="mt-0">
                                                 {{$comment->user_name}}
                                             </h5> 
-                                            <p>{{$comment->comment}}</p>
+                                            <p>{!!$comment->comment!!}</p>
                                             <small>
                                                 @if(date('Y-m-d', strtotime($comment->created_at)) < date('Y-m-d', strtotime(now())))
                                                     {{date('j F, Y', strtotime($comment->created_at))}}
@@ -63,7 +63,7 @@
                                             @if($ticket->ticket_status == 'Solve' && $ticket->user_id == Auth::user()->id)
                                                 <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
                                             @elseif($ticket->user_id == Auth::user()->id)
-                                                <textarea class="form-control" rows="3" id="comment"></textarea><br>
+                                                <textarea class="form-control" rows="3" id="article-ckeditor"></textarea><br>
                                                 <button class="btn btn-primary send" id="send">Send</button>
                                                 <button class="btn btn-primary solve" id="solve">Solve</button>
                                             @endif
@@ -81,4 +81,5 @@
         </div>
     </div>
 </div>
+
 @endsection
