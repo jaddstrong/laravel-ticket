@@ -17,6 +17,7 @@
                     <table class="table table-bordered data-table">
                         <thead>
                             <tr>
+                                <th>Ticket Code</th>
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th>Title</th>

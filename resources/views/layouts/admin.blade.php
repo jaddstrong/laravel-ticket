@@ -162,6 +162,7 @@
                 serverSide: true,
                 ajax: "{{ route('dataTables') }}",
                 columns: [
+                    {data: 'ticket_code', name: 'ticket_code'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'ticket_status', name: 'ticket_status'},
                     {data: 'ticket_title', name: 'ticket_title'},

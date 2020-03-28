@@ -16,6 +16,7 @@ class CreateTicketsTable extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id');
+            $table->string('ticket_code')->nullable();
             $table->string('ticket_title');
             $table->string('ticket_description');
             $table->set('ticket_importance', ['level1', 'level2', 'level3']);

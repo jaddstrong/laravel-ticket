@@ -13,23 +13,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+Route::get('/home', 'HomeController@index');
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/home', 'HomeController@index');
 
 // ADMIN ROUTES
 Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function(){
 
     Route::get('/admin', 'AdminsController@index');
-    Route::get('/admin/{id}/show','AdminsController@show');
-    Route::get('/admin/{id}/add','AdminsController@add');
-    Route::get('/admin/pending', 'AdminsController@pending');
-    Route::post('/admin/comment', 'AdminsController@comment');
-    Route::post('/admin/{id}/return', 'AdminsController@return');
-    Route::post('/admin/{id}/solve', 'AdminsController@solve');
-    Route::post('/admin/{id}/open', 'AdminsController@open');
     Route::get('/admin/archive', 'AdminsController@archive');
+    Route::get('/admin/pending', 'AdminsController@pending');
+    //TICKET ROUTES
+    Route::post('/admin/{id}/return', 'TicketsController@return');
+    Route::get('/admin/{id}/add','TicketsController@add');
 
 });
 
@@ -37,16 +35,17 @@ Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
 Route::group(['middleware' => 'App\Http\Middleware\UserMiddleware'], function(){
 
     Route::get('/user', 'UsersController@index');
-    Route::post('/user', 'UsersController@store');
-    Route::get('/user/{id}/edit', 'UsersController@edit');
-    Route::post('/user/{id}/update', 'UsersController@update');
-    Route::delete('/user/{id}/delete', 'UsersController@destroy');
     Route::get('/archive', 'UsersController@archive');
     Route::get('/userArchive', 'UsersController@userArchive');
+    //TICKET ROUTES
+    Route::post('/user', 'TicketsController@store');
+    Route::get('/user/{id}/edit', 'TicketsController@edit');
+    Route::post('/user/{id}/update', 'TicketsController@update');
+    Route::delete('/user/{id}/delete', 'TicketsController@destroy');
 
 });
 
-//ALL USER
+//ALL USER`S
 Route::group(['middleware' => 'App\Http\Middleware\AuthCheck'], function(){
 
     //TICKETS
@@ -58,9 +57,9 @@ Route::group(['middleware' => 'App\Http\Middleware\AuthCheck'], function(){
     Route::post('/comment', 'CommentsController@comment');
     //LOGS
     Route::post('/logs','LogsController@logs');
+
 });
 
-Auth::routes();
 
 
 

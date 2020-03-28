@@ -18,6 +18,7 @@
                     <table class="table table-bordered data-table">
                         <thead>
                             <tr>
+                                <th>Ticket Code</th>
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th>Title</th>
@@ -54,7 +55,7 @@
                     </div>
                     <div class="form-group">
                         <label for="description">Ticket description: </label>
-                        <textarea type="text" id="article-ckeditor" name="article-ckeditor" class="form-control" rows="5"></textarea>
+                        <textarea type="text" id="article-ckeditor" class="form-control" rows="5"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="importance">Importance level: </label>
@@ -76,7 +77,6 @@
 </div>
 
 <script>
-    CKEDITOR.replace( 'article-ckeditor' );
     // EDIT TICKET
     $(".data-table").on('click', '.edit', function(){
         $('#submit').hide();
@@ -85,14 +85,16 @@
         $.ajax({type:"GET", url: "/user/"+id+"/edit", success: function(result){
             $('#submit').val("Update");
             $('#title').val(result.ticket_title);
-            $('#description').val(result.ticket_description);
+            $('#article-ckeditor').html($(result.ticket_description).text());
+            CKEDITOR.replace( 'article-ckeditor' );
             $('#importance').val(result.ticket_importance);
             $('#myModal').modal("show");
         }});
 
         $("#update").click(function(){
+            CKEDITOR.instances['article-ckeditor'].updateElement();
             var title = $('#title').val();
-            var description = $('#description').val();
+            var description = $('#article-ckeditor').val();
             var importance = $('#importance').val();
             $.ajax({
                 url:"/user/"+id+"/update",
@@ -114,6 +116,13 @@
     $("#create").click(function(){
         $('#update').hide();
         $('#submit').show();
+        $('#title').val("");
+        $('#article-ckeditor').text("");
+        CKEDITOR.replace( 'article-ckeditor' );
+    });
+
+    $(".cancel").click(function(){
+        location.reload(true);
     });
 
     // CREATE TICKET
