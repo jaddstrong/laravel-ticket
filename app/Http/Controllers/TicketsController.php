@@ -30,11 +30,12 @@ class TicketsController extends Controller
         $ticket->ticket_status = 'New';
         $ticket->save();
 
+        //GET LAST INSERTED ID AND TIMESTAMP && SET FORMAT FOR TICKET CODE
         $get_last = Ticket::orderBy('id', 'desc')->first();
-
         $timestamp = str_replace(' ', '-', $get_last->created_at);
         $date = preg_replace('/[^A-Za-z0-9 ]/', '', $timestamp);
         $ticket_code = $date.$get_last->ticket_importance.$get_last->id;
+
         $update = Ticket::find($get_last->id);
         $update->ticket_code = $ticket_code;
         $update->save();

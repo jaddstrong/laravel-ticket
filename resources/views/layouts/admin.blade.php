@@ -182,6 +182,7 @@
                 url: "/logs",
                 data:{id:id},
                 success: function(result){
+                    $("#logs_table > tbody").empty();
                     var i;
                     for(i = 0; i < result.length; i++){
                         var date = new Date(result[i].created_at).toUTCString();
@@ -189,11 +190,6 @@
                     }
                 }
             });
-        });
-
-        //EMPTY THE MODAL OF LOGS
-        $(".cancel").click(function(){
-            $("#logs_table > tbody").empty();
         });
 
     });

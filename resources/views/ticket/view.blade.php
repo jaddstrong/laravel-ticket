@@ -42,7 +42,7 @@
                                                 {{ $ticket->created_at->diffForHumans() }}
                                             @endif
                                     </small>
-                                    
+
                                     {{-- Comment List --}}
                                     @foreach($ticket->comments as $comment)
                                     <div class="media mt-3">
@@ -69,7 +69,7 @@
                                                 <input type="hidden" id="id" name="id" value="{{$ticket->id}}">
                                             @if($ticket->ticket_status == 'Solve' && $ticket->user_id == Auth::user()->id)
                                                 <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
-                                            @elseif($ticket->ticket_status == 'Solve' && $ticket->ticket_admin_id == Auth::user()->id)
+                                            @elseif($ticket->ticket_status == 'Solve' && Auth::user()->user_type == "admin")
                                                 <button class="btn btn-primary open_ticket" id="open_ticket">Re-open Ticket</button>
                                             @elseif($ticket->user_id == Auth::user()->id)
                                                 <textarea class="form-control" rows="3" id="article-ckeditor"></textarea><br>
@@ -80,8 +80,10 @@
                                                 <button class="btn btn-primary send" id="send">Send</button>
                                                 <button class="btn btn-primary return" id="return">Return</button>
                                                 <button class="btn btn-primary solve" id="solve">Solve</button>
-                                            @else
+                                            @elseif(Auth::user()->user_type == "admin" && $ticket->ticket_admin_id == Auth::user()->id)
                                             <a href="/admin/{{$ticket->id}}/add" id="{{$ticket->id}}" class="btn btn-sm btn-success accept">Accept</a>
+                                            @else
+                                            
                                             @endif
                                         </div>
                                     </div>
