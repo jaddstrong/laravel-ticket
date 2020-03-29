@@ -80,8 +80,8 @@
                                                 <button class="btn btn-primary send" id="send">Send</button>
                                                 <button class="btn btn-primary return" id="return">Return</button>
                                                 <button class="btn btn-primary solve" id="solve">Solve</button>
-                                            @elseif(Auth::user()->user_type == "admin" && $ticket->ticket_admin_id == Auth::user()->id)
-                                            <a href="/admin/{{$ticket->id}}/add" id="{{$ticket->id}}" class="btn btn-sm btn-success accept">Accept</a>
+                                            @elseif(Auth::user()->user_type == "admin")
+                                                <a href="/admin/{{$ticket->id}}/add" id="{{$ticket->id}}" class="btn btn-sm btn-success accept">Accept</a>
                                             @else
                                             
                                             @endif
