@@ -32,8 +32,12 @@
                                 <img class="mr-3" alt="Bootstrap Media Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-8.jpg" />
                                 {{-- Ticket Information --}}
                                 <div class="media-body">
-                                    <h5 class="mt-0">{{$ticket->ticket_title}}</h5> 
-                                    <p class="">{!! $ticket->ticket_description !!}</p>
+                                    <label class="float-right">{{$ticket->ticket_code}}</label>
+                                    <h5 class="mt-0">{{$ticket->ticket_title}}</h5>
+
+                                    <div style="background-color: #e9ecef;padding:3px 10px 3px;">
+                                        <p>{!! $ticket->ticket_description !!}</p>
+                                    </div>
                                     <small>{{$ticket->ticket_importance}}</small><br>
                                     <small>
                                         @if(date('Y-m-d', strtotime($ticket->created_at)) < date('Y-m-d', strtotime(now())))
@@ -42,7 +46,7 @@
                                                 {{ $ticket->created_at->diffForHumans() }}
                                             @endif
                                     </small>
-
+                                    <hr>
                                     {{-- Comment List --}}
                                     @foreach($ticket->comments as $comment)
                                     <div class="media mt-3">
@@ -51,7 +55,9 @@
                                             <h5 class="mt-0">
                                                 {{$comment->user_name}}
                                             </h5> 
-                                            <p>{!! $comment->comment !!}</p>
+                                            <div style="background-color: #e9ecef;padding:3px 10px 3px;">
+                                                <p>{!! $comment->comment !!}</p>
+                                            </div>
                                             <small>
                                                 @if(date('Y-m-d', strtotime($comment->created_at)) < date('Y-m-d', strtotime(now())))
                                                     {{date('j F, Y', strtotime($comment->created_at))}}

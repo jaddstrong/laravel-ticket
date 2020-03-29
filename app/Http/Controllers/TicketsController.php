@@ -84,20 +84,28 @@ class TicketsController extends Controller
         $ticket->ticket_status = 'Drop';
         $ticket->save();
 
+        // Create logs
+        $logs = new Logs;
+        $logs->ticket_id = $id;
+        $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
+        $logs->name = Auth::user()->name;
+        $logs->action = "droped this ticket.";
+        $logs->save();
+
         return redirect('/user');
     }
     
     //RETURN THE TICKET TO POLL
     public function return(Request $request)
     {
-        $ticket = Ticket::find($request->input('id'));
+        $ticket = Ticket::find($request->id);
         $ticket->ticket_status = 'Return';
         $ticket->ticket_admin_id = 0;
         $ticket->save();
 
         // Create logs
         $logs = new Logs;
-        $logs->ticket_id = $request->input('id');
+        $logs->ticket_id = $request->id;
         $logs->user_id = Auth::user()->id;// USER_ID is for ethier admin or user
         $logs->name = Auth::user()->name;
         $logs->action = "returned this ticket.";

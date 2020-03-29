@@ -85,7 +85,7 @@
         $.ajax({type:"GET", url: "/user/"+id+"/edit", success: function(result){
             $('#submit').val("Update");
             $('#title').val(result.ticket_title);
-            $('#article-ckeditor').html($(result.ticket_description).text());
+            $('#article-ckeditor').html(result.ticket_description);
             CKEDITOR.replace( 'article-ckeditor' );
             $('#importance').val(result.ticket_importance);
             $('#myModal').modal("show");
@@ -117,7 +117,7 @@
         $('#update').hide();
         $('#submit').show();
         $('#title').val("");
-        $('#article-ckeditor').text("");
+        $('#article-ckeditor').html("");
         CKEDITOR.replace( 'article-ckeditor' );
     });
 
