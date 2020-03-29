@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="media">
-                                <img class="mr-3" alt="Bootstrap Media Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-8.jpg" />
+                                <img class="mr-3" style="width:64px;" src="/img/default.jpg" />
                                 {{-- Ticket Information --}}
                                 <div class="media-body">
                                     <label class="float-right">{{$ticket->ticket_code}}</label>
@@ -50,7 +50,7 @@
                                     {{-- Comment List --}}
                                     @foreach($ticket->comments as $comment)
                                     <div class="media mt-3">
-                                         <a class="pr-3" href="#"><img alt="Bootstrap Media Another Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-2.jpg" /></a>
+                                         <a class="pr-3" href="#"><img style="width:64px;" src="/img/default.jpg" /></a>
                                         <div class="media-body">
                                             <h5 class="mt-0">
                                                 {{$comment->user_name}}
