@@ -184,7 +184,7 @@ class TicketsController extends Controller
 
     }
 
-    //DISPLAY CREATED TICKET THAT ARE OPEN,PENDING,RETURN,REOPEN
+    //DYNAMIC DATA TABLE DISPLAY
     public function dataTables(Request $request)
     {
         $url = URL::previous();
@@ -198,7 +198,7 @@ class TicketsController extends Controller
     
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($time) {
-                        return $time->created_at->format('Y/m/d H:i:s');
+                        return $time->created_at->format('Y/m/d h:i:s');
                     })
                     ->editColumn('ticket_description', function ($des) {
                         $des = strip_tags($des->ticket_description);
@@ -223,7 +223,7 @@ class TicketsController extends Controller
     
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
-                        return $user->created_at->format('Y/m/d H:i:s');
+                        return $user->created_at->format('Y/m/d h:i:s');
                     })
                     ->editColumn('ticket_description', function ($des) {
                         $des = strip_tags($des->ticket_description);
@@ -248,7 +248,7 @@ class TicketsController extends Controller
     
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
-                        return $user->created_at->format('Y/m/d H:i:s');
+                        return $user->created_at->format('Y/m/d h:i:s');
                     })
                     ->editColumn('ticket_description', function ($des) {
                         $des = strip_tags($des->ticket_description);
@@ -274,7 +274,7 @@ class TicketsController extends Controller
     
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
-                    return $user->created_at->format('Y/m/d H:i:s');
+                    return $user->created_at->format('Y/m/d h:i:s');
                     })
                     ->editColumn('ticket_description', function ($des) {
                         $des = strip_tags($des->ticket_description);
@@ -304,7 +304,7 @@ class TicketsController extends Controller
     
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
-                        return $user->created_at->format('Y/m/d H:i:s');
+                        return $user->created_at->format('Y/m/d h:i:s');
                     })
                     ->editColumn('ticket_description', function ($des) {
                         $des = strip_tags($des->ticket_description);
@@ -330,7 +330,7 @@ class TicketsController extends Controller
     
                 return Datatables::of($data)
                     ->editColumn('created_at', function ($user) {
-                        return $user->created_at->format('Y/m/d H:i:s');
+                        return $user->created_at->format('Y/m/d h:i:s');
                     })
                     ->editColumn('ticket_description', function ($des) {
                         $des = strip_tags($des->ticket_description);

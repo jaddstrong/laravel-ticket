@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="media">
-                                <img class="mr-3" style="width:64px;" src="/img/default.jpg" />
+                                {{-- <img class="mr-3" style="width:64px;" src="/img/default.jpg" /> --}}
                                 {{-- Ticket Information --}}
                                 <div class="media-body">
                                     <label class="float-right">{{$ticket->ticket_code}}</label>
@@ -38,10 +38,14 @@
                                     <div style="background-color: #e9ecef;padding:3px 10px 3px;">
                                         <p>{!! $ticket->ticket_description !!}</p>
                                     </div>
-                                    <small>{{$ticket->ticket_importance}}</small><br>
+                                    <small class="float-right">{{$ticket->ticket_importance}}</small>
+                                    {{-- @foreach($ticket->user as $user) --}}
+                                        <small>{{$ticket->user->name}}</small>
+                                    {{-- @endforeach --}}
+                                    <br>
                                     <small>
                                         @if(date('Y-m-d', strtotime($ticket->created_at)) < date('Y-m-d', strtotime(now())))
-                                                {{date('j F, Y', strtotime($ticket->created_at))}}
+                                                {{date('j F, Y h:i:s', strtotime($ticket->created_at))}}
                                             @else
                                                 {{ $ticket->created_at->diffForHumans() }}
                                             @endif
@@ -60,7 +64,7 @@
                                             </div>
                                             <small>
                                                 @if(date('Y-m-d', strtotime($comment->created_at)) < date('Y-m-d', strtotime(now())))
-                                                    {{date('j F, Y', strtotime($comment->created_at))}}
+                                                    {{date('j F, Y h:i:s', strtotime($comment->created_at))}}
                                                 @else
                                                     {{ $comment->created_at->diffForHumans() }}
                                                 @endif
